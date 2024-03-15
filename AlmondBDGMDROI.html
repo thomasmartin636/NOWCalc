@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MD Calc in Almonds</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #15bcbc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            position: absolute;
+            top: 2%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            align-items: center;
+            justify-content:center;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 600px;
+        }
+        .container {
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            flex-direction: column;
+            margin-top: 5px;
+        }
+        .column {
+            float: left;
+            width: 33.33%;
+        }
+
+        .input-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        input {
+            width: calc(100% - 16px);
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: navy;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        h2 {
+            margin-top: 20px;
+            color: #333;
+        }
+
+        p {
+            color: #666;
+        }
+
+        .large-dropdown {
+            width: 185px;
+            height: 35px;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+        .note-button {
+            background-color: transparent;
+            border: none;
+            color: blue;
+            cursor: help; /* Change cursor to pointer on hover */
+            text-decoration: underline; /* Underline text on hover */
+            font-size: 18px;
+            padding: 10px;
+            text-align: left;
+            margin-top: 20px;
+        }
+        
+        .note-button:hover::after {
+            content: attr(data-note); /* Show note when hovered */
+            position: absolute;
+            background-color: #f9f9f9;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: max-content;
+            z-index: 1;
+            font-size: 16px;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted black; /* Add a dotted underline */
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: max-content;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -75px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="input-container">
+    <h1>Almond Mating Disruption Calculator</h1>
+    
+    <form id="calculatorForm">
+        <div class="input-container">
+            <div class="column">
+                
+                <label for="varietyname1">Variety Name 1:</label>
+                <select id="varietyname1" required class = "large-dropdown">
+                    <option value="">Select a variety name</option>
+                    <option value="NPInshell">Nonpareil Inshell</option>
+                    <option value="NPMeats">Nonpareil Meats</option>
+                    <option value="Pollenizer">Pollenizer</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <label for="yield1">Yield (Variety 1):</label>
+                <input type="number" id="yield1" required>
+
+                <label for="rejectsP1">Rejects (Variety 1):</label>
+                <input type="number" id="rejectsP1" required> 
+
+                <label for="commodityPrice1">Price (Variety 1):</label>
+                <input type="number" id="commodityPrice1" required>
+            </div>
+    
+            <div class="column">
+                
+                <label for="varietyname2">Variety Name 2:</label>
+                <select id="varietyname2" required class = "large-dropdown">
+                    <option value="">Select a variety name</option>
+                    <option value="NPInshell">Nonpareil Inshell</option>
+                    <option value="NPMeats">Nonpareil Meats</option>
+                    <option value="Pollenizer">Pollenizer</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <label for="yield2">Yield (Variety 2):</label>
+                <input type="number" id="yield2" required>
+
+                <label for="rejectsP2">Rejects (Variety 2):</label>
+                <input type="number" id="rejectsP2" required>   
+
+                <label for="commodityPrice2">Price (Variety 2):</label>
+                <input type="number" id="commodityPrice2" required>
+            </div>
+    
+            <div class="column">
+
+                <label for="varietyname3">Variety Name 3:</label>
+                <select id="varietyname3" required class = "large-dropdown">
+                    <option value="">Select a variety name</option>
+                    <option value="NPInshell">Nonpareil Inshell</option>
+                    <option value="NPMeats">Nonpareil Meats</option>
+                    <option value="Pollenizer">Pollenizer</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <label for="yield3">Yield (Variety 3):</label>
+                <input type="number" id="yield3" required>
+
+                <label for="rejectsP3">Rejects (Variety 3):</label>
+                <input type="number" id="rejectsP3" required>
+                
+                <label for="commodityPrice3">Price (Variety 3):</label>
+                <input type="number" id="commodityPrice3" required>
+            </div>
+        </div>
+    
+        <div>
+            <label for="priceOfMD">Price of Mating Disruption:</label>
+            <input type="number" id="priceOfMD" required>
+        </div>
+    
+        <button type="button" onclick="calculate()">Calculate</button>
+    
+        <button class="note-button" data-note="Value = (Price * Yield * (1 - 2 * Rejects)) + (Yield * (1 - 2 * Rejects) * QualityBonus)">
+            Hover for Equation 
+        </button>  
+
+        <h2><span class = "tooltip"><span class="tooltiptext">Value of Orchard WITHOUT Mating Disruption</span>Total Original Value:</span></h2>
+        <p id="totalOriginalValue">Waiting for input...</p>
+
+        <h2><span class = "tooltip"><span class="tooltiptext">Value of Orchard WITH Mating Disruption</span>Total Mating Disruption Value:</span></h2>
+        <p id="totalMDValue">Waiting for input...</p>
+
+        <h2><span class = "tooltip"><span class="tooltiptext">Difference = (Mating Disruption Value - Original Value) - Price of MD</span>Difference with cost of MD included:</span></h2>
+        <p id="adjustedDifference">Waiting for input...</p>
+
+        <h2><span class = "tooltip"><span class="tooltiptext">ROI = Difference / Price of MD</span>Return on Investment (ROI):</span></h2>
+        <p id="ROI">Waiting for input...</p>
+
+        <h2>$ Difference due to Yield change:</h2>
+        <p id="YieldDifference">Waiting for input...</p>
+
+        <h2>$ Difference due to Quality Bonus change:</h2>
+        <p id="QBDifference">Waiting for input...</p>
+
+        </div>
+    </form>
+    </div>
+
+    <script>
+        function calculate() {
+            var rejectsP1 = parseFloat(document.getElementById('rejectsP1').value);
+            var rejects1 = calculateRejects1(rejectsP1);
+            var yield1 = parseFloat(document.getElementById('yield1').value);
+            var price1 = parseFloat(document.getElementById('commodityPrice1').value);
+            var varietyname1 = document.getElementById('varietyname1').value;
+
+            var qualityBonus1 = calculateQualityBonus(varietyname1, rejects1);
+            var originalValue1 = calculateOriginalValue(yield1, price1, rejects1, qualityBonus1);
+            var rejectsResult1 = rejects1 * 0.5; // Calculating rejects1MD
+            var qualityBonusMD1 = calculateQualityBonusMD(varietyname1, rejectsResult1);
+            var MDValue1 = calculateMDValue(yield1, price1, rejectsResult1, qualityBonusMD1)
+
+            var rejectsP2 = parseFloat(document.getElementById('rejectsP2').value);
+            var rejects2 = calculateRejects2(rejectsP2);
+            var yield2 = parseFloat(document.getElementById('yield2').value);
+            var price2 = parseFloat(document.getElementById('commodityPrice2').value);
+            var varietyname2 = document.getElementById('varietyname2').value;
+
+
+            var qualityBonus2 = calculateQualityBonus(varietyname2, rejects2);
+            var originalValue2 = calculateOriginalValue(yield2, price2, rejects2, qualityBonus2);
+            var rejectsResult2 = rejects2 * 0.5; // Calculating rejects2MD
+            var qualityBonusMD2 = calculateQualityBonusMD(varietyname2, rejectsResult2);
+            var MDValue2 = calculateMDValue(yield2, price2, rejectsResult2, qualityBonusMD2)
+
+            var rejectsP3 = parseFloat(document.getElementById('rejectsP3').value);
+            var rejects3 = calculateRejects3(rejectsP3);
+            var yield3 = parseFloat(document.getElementById('yield3').value);
+            var price3 = parseFloat(document.getElementById('commodityPrice3').value);
+            var varietyname3 = document.getElementById('varietyname3').value;
+
+
+            var qualityBonus3 = calculateQualityBonus(varietyname3, rejects3);
+            var originalValue3 = calculateOriginalValue(yield3, price3, rejects3, qualityBonus3);
+            var rejectsResult3 = rejects3 * 0.5; // Calculating rejects3MD
+            var qualityBonusMD3 = calculateQualityBonusMD(varietyname3, rejectsResult3);
+            var MDValue3 = calculateMDValue(yield3, price3, rejectsResult3, qualityBonusMD3)
+            var YieldDifference = calculateYieldDifference(yield1, yield2, yield3, price1, price2, price3, rejects1, rejects2, rejects3, rejectsResult1, rejectsResult2, rejectsResult3).toFixed(2);
+            var QBDifference = calculateQBDifference(yield1, rejects1, rejectsResult1, qualityBonus1, qualityBonusMD1, yield2, rejects2, rejectsResult2, qualityBonus2, qualityBonusMD2, yield3, rejects3, rejectsResult3, qualityBonus3, qualityBonusMD3, varietyname1, varietyname2, varietyname3).toFixed(2);
+
+            var priceOfMD = parseFloat(document.getElementById('priceOfMD').value);
+            
+
+            var totalOriginalValue = (originalValue1 + originalValue2 + originalValue3).toFixed(2);
+            var totalMDValue = (MDValue1 + MDValue2 + MDValue3).toFixed(2);
+
+            var differenceValue = (totalMDValue - totalOriginalValue).toFixed(2);
+            var adjustedDifference = (differenceValue - priceOfMD).toFixed(2);
+            var ROI = ((adjustedDifference / priceOfMD) * 100).toFixed(2);
+
+           
+
+
+            document.getElementById('totalOriginalValue').innerHTML = `Total Original Value: <span style = "font-weight: bold;">$${totalOriginalValue}</span>`;
+            document.getElementById('totalMDValue').innerHTML = `Total MD Value: <span style = "font-weight: bold;">$${totalMDValue}</span>`;
+            document.getElementById('adjustedDifference').innerHTML = `Difference with Cost of MD included: <span style = "font-weight: bold;">$${differenceValue} - $${priceOfMD} = $${adjustedDifference}</span>`;
+            document.getElementById('ROI').innerHTML = `Return on Investment (ROI): <span style = "font-weight: bold;">${ROI}%</span>`;
+            document.getElementById('YieldDifference').innerHTML = `$ Difference due to Yield change: <span style = "font-weight: bold;"> $${YieldDifference} </span>`;
+            document.getElementById('QBDifference').innerHTML = `$ Difference due to QB change: <span style = "font-weight: bold;"> $${QBDifference} </span>`;
+
+
+        }
+
+        function calculateQualityBonus(varietyname, rejects) {
+            var qualityBonus;
+        if (varietyname == 'NPMeats') {
+
+        
+            if (rejects < 0) {
+            rejects = 0;
+                alert("Rejects cannot be negative. Setting to 0.");
+            } else if (rejects < 0.006) {
+                qualityBonus = 0.185;
+            } else if (rejects < 0.011) {
+                qualityBonus = 0.175;
+            } else if (rejects < 0.016) {
+                qualityBonus = 0.165;
+            } else if (rejects < 0.02) {
+                qualityBonus = 0.155;
+            } else if (rejects < 0.021) {
+                qualityBonus = 0.115;
+            } else if (rejects < 0.026) {
+                qualityBonus = 0.065;
+            } else if (rejects < 0.031) {
+                qualityBonus = 0.05;
+            } else if (rejects < 0.041) {
+                qualityBonus = 0.045;
+            } else if (rejects < 0.051) {
+                qualityBonus = 0.035;
+            } else if (rejects < 0.061) {
+                qualityBonus = 0.025;
+            } else if (rejects < 0.071) {
+                qualityBonus = 0.015;
+            } else if (rejects < 0.081) {
+                qualityBonus = 0.005;
+            } else if (rejects < 0.091) {
+                qualityBonus = -0.005;
+            } else {
+                qualityBonus = -0.015;
+            }
+
+            }
+
+            else if(varietyname == 'NPInshell') {
+                if (rejects < 0) {
+            rejects = 0;
+                alert("Rejects cannot be negative. Setting to 0.");
+            } else if (rejects < 0.006) {
+                qualityBonus = 0.215;
+            } else if (rejects < 0.011) {
+                qualityBonus = 0.205;
+            } else if (rejects < 0.016) {
+                qualityBonus = 0.195;
+            } else if (rejects < 0.021) {
+                qualityBonus = 0.185;
+            } else if (rejects < 0.026) {
+                qualityBonus = 0.175;
+            } else if (rejects < 0.031) {
+                qualityBonus = 0.16;
+            } else if (rejects < 0.041) {
+                qualityBonus = 0.025;
+            } else if (rejects < 0.051) {
+                qualityBonus = 0.015;
+            } else if (rejects < 0.061) {
+                qualityBonus = 0.005;
+            } else if (rejects < 0.071) {
+                qualityBonus = -0.005;
+            } else if (rejects < 0.081) {
+                qualityBonus = -0.015;
+            } else if (rejects < 0.000) {
+                qualityBonus = -0.025;
+            } else {
+                qualityBonus = -0.035;
+            }
+
+
+            }
+            
+            else if(varietyname == 'Pollenizer') {
+                if (rejects < 0) {
+            rejects = 0;
+                alert("Rejects cannot be negative. Setting to 0.");
+            } else if (rejects < 0.006) {
+                qualityBonus = 0.14;
+            } else if (rejects < 0.011) {
+                qualityBonus = 0.13;
+            } else if (rejects < 0.016) {
+                qualityBonus = 0.12;
+            } else if (rejects < 0.021) {
+                qualityBonus = 0.11;
+            } else if (rejects < 0.026) {
+                qualityBonus = 0.06;
+            } else if (rejects < 0.031) {
+                qualityBonus = 0.05;
+            } else if (rejects < 0.041) {
+                qualityBonus = 0.04;
+            } else if (rejects < 0.051) {
+                qualityBonus = 0.03;
+            } else if (rejects < 0.061) {
+                qualityBonus = 0.02;
+            } else if (rejects < 0.071) {
+                qualityBonus = 0.01;
+            } else if (rejects < 0.081) {
+                qualityBonus = 0.00;
+            } else if (rejects < 0.091) {
+                qualityBonus = -0.01;
+            } else {
+                qualityBonus = -0.02;
+            }
+
+            }
+
+            else {
+                qualityBonus = 0;
+            }
+
+            return qualityBonus
+        
+        }
+
+        
+        function calculateQualityBonusMD(varietyname, rejectsResult) {
+            var qualityBonusMD;
+
+            if (varietyname == 'NPMeats') {
+
+        
+            if (rejectsResult < 0) {
+            rejectsResult = 0;
+                alert("Rejects cannot be negative. Setting to 0.");
+            } else if (rejectsResult < 0.006) {
+                qualityBonusMD = 0.185;
+            } else if (rejectsResult < 0.011) {
+                qualityBonusMD = 0.175;
+            } else if (rejectsResult < 0.016) {
+                qualityBonusMD = 0.165;
+            } else if (rejectsResult < 0.02) {
+                qualityBonusMD = 0.155;
+            } else if (rejectsResult < 0.021) {
+                qualityBonusMD = 0.115;
+            } else if (rejectsResult < 0.026) {
+                qualityBonusMD = 0.065;
+            } else if (rejectsResult < 0.031) {
+                qualityBonusMD = 0.05;
+            } else if (rejectsResult < 0.041) {
+                qualityBonusMD = 0.045;
+            } else if (rejectsResult < 0.051) {
+                qualityBonusMD = 0.035;
+            } else if (rejectsResult < 0.061) {
+                qualityBonusMD = 0.025;
+            } else if (rejectsResult < 0.071) {
+                qualityBonusMD = 0.015;
+            } else if (rejectsResult < 0.081) {
+                qualityBonusMD = 0.005;
+            } else if (rejectsResult < 0.091) {
+                qualityBonusMD = -0.005;
+            } else {
+                qualityBonusMD = -0.015;
+            }
+
+            }
+
+            else if(varietyname == 'NPInshell') {
+                if (rejectsResult < 0) {
+            rejectsResult = 0;
+                alert("Rejects cannot be negative. Setting to 0.");
+            } else if (rejectsResult < 0.006) {
+                qualityBonusMD = 0.215;
+            } else if (rejectsResult < 0.011) {
+                qualityBonusMD = 0.205;
+            } else if (rejectsResult < 0.016) {
+                qualityBonusMD = 0.195;
+            } else if (rejectsResult < 0.021) {
+                qualityBonusMD = 0.185;
+            } else if (rejectsResult < 0.026) {
+                qualityBonusMD = 0.175;
+            } else if (rejectsResult < 0.031) {
+                qualityBonusMD = 0.16;
+            } else if (rejectsResult < 0.041) {
+                qualityBonusMD = 0.025;
+            } else if (rejectsResult < 0.051) {
+                qualityBonusMD = 0.015;
+            } else if (rejectsResult < 0.061) {
+                qualityBonusMD = 0.005;
+            } else if (rejectsResult < 0.071) {
+                qualityBonusMD = -0.005;
+            } else if (rejectsResult < 0.081) {
+                qualityBonusMD = -0.015;
+            } else if (rejectsResult < 0.000) {
+                qualityBonusMD = -0.025;
+            } else {
+                qualityBonusMD = -0.035;
+            }
+
+
+            }
+
+            else if(varietyname == 'Pollenizer') {
+                if (rejectsResult < 0) {
+            rejectsResult = 0;
+                alert("Rejects cannot be negative. Setting to 0.");
+            } else if (rejectsResult < 0.006) {
+                qualityBonusMD = 0.14;
+            } else if (rejectsResult < 0.011) {
+                qualityBonusMD = 0.13;
+            } else if (rejectsResult < 0.016) {
+                qualityBonusMD = 0.12;
+            } else if (rejectsResult < 0.021) {
+                qualityBonusMD = 0.11;
+            } else if (rejectsResult < 0.026) {
+                qualityBonusMD = 0.06;
+            } else if (rejectsResult < 0.031) {
+                qualityBonusMD = 0.05;
+            } else if (rejectsResult < 0.041) {
+                qualityBonusMD = 0.04;
+            } else if (rejectsResult < 0.051) {
+                qualityBonusMD = 0.03;
+            } else if (rejectsResult < 0.061) {
+                qualityBonusMD = 0.02;
+            } else if (rejectsResult < 0.071) {
+                qualityBonusMD = 0.01;
+            } else if (rejectsResult < 0.081) {
+                qualityBonusMD = 0.00;
+            } else if (rejectsResult < 0.091) {
+                qualityBonusMD = -0.01;
+            } else {
+                qualityBonusMD = -0.02;
+            }
+
+            }
+
+            else {
+                qualityBonusMD = 0;
+            }
+
+            return qualityBonusMD
+
+            }
+        function calculateRejects1(rejectsP1) {
+            var rejects1 = rejectsP1/100
+            return rejects1;
+        }
+
+        function calculateRejects2(rejectsP2) {
+            var rejects2 = rejectsP2/100
+            return rejects2;
+        }
+
+        function calculateRejects3(rejectsP3) {
+            var rejects3 = rejectsP3/100
+            return rejects3;
+        }
+        
+        function calculateOriginalValue(yield, price, rejects, qualityBonus) {
+            var originalValue = (price * yield * (1 - 2 * rejects)) + (yield * (1 - 2 * rejects) * qualityBonus);
+            return originalValue;
+        }
+
+        function calculateMDValue(yield, price, rejectsResult, qualityBonusMD) {
+            var MDValue = (price * yield * (1 - 2 * rejectsResult)) + (yield * (1 - 2 * rejectsResult) * qualityBonusMD);
+            return MDValue;
+        }
+
+        function calculateROI(DifferenceValue, priceOfMD) {
+            var ROI = (DifferenceValue / priceofMD);
+            return ROI;
+        }
+
+        function calculateYieldDifference(yield1, yield2, yield3, price1, price2, price3, rejects1, rejects2, rejects3, rejectsResult1, rejectsResult2, rejectsResult3) {
+            var YieldDifference = ((price1 * yield1 * (1 - 2 * rejectsResult1)) + (price2 * yield2 * (1 - 2 * rejectsResult2)) + (price3 * yield3 * (1 - 2 * rejectsResult3))) - ((price1 * yield1 * (1 - 2 * rejects1)) + (price2 * yield2 * (1 - 2 * rejects2)) + (price3 * yield3 * (1 - 2 * rejects3)))
+            return YieldDifference;
+        }
+
+        function calculateQBDifference(yield1, rejects1, rejectsResult1, qualityBonus1, qualityBonusMD1, yield2, rejects2, rejectsResult2, qualityBonus2, qualityBonusMD2, yield3, rejects3, rejectsResult3, qualityBonus3, qualityBonusMD3, varietyname1, varietyname2, varietyname3) {
+            var QBDifference = ((yield1 * (1 - 2 * rejectsResult1) * qualityBonusMD1) + (yield2 * (1 - 2 * rejectsResult2) * qualityBonusMD2) + (yield3 * (1 - 2 * rejectsResult3) * qualityBonusMD3)) - ((yield1 * (1 - 2 * rejects1) * qualityBonus1) + (yield2 * (1 - 2 * rejects2) * qualityBonus2) + (yield3 * (1 - 2 * rejects3) * qualityBonus3)) 
+            return QBDifference;
+        }
+    </script>
+</body>
+</html>
