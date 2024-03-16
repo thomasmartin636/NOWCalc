@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Example A MD Calc</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #15bcbc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            position: absolute;
+            top: 2%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            align-items: center;
+            justify-content:center;
+            width: max-content;
+        }
+
+        form {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 700px;
+        }
+        .container {
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            flex-direction: column;
+            height: 100vh;
+            margin-top: 170px;
+        }
+
+        .input-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            margin-top: 150px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        input {
+            width: calc(100% - 16px);
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+        .input-group {
+             display: flex;
+             flex-direction: column;
+            margin-bottom: 15px;
+            }
+
+        .input-group label {
+            margin-bottom: 5px;
+        }
+
+        button {
+            background-color: navy;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        h2 {
+            margin-top: 20px;
+            color: #333;
+        }
+
+        p {
+            color: #666;
+        }
+
+        .note-button {
+            background-color: transparent;
+            border: none;
+            color: blue;
+            cursor: help; /* Change cursor to pointer on hover */
+            text-decoration: underline; /* Underline text on hover */
+            font-size: 18px;
+            padding: 10px;
+            text-align: left;
+            margin-top: 20px;
+        }
+        
+        .note-button:hover::after {
+            content: attr(data-note); /* Show note when hovered */
+            position: absolute;
+            background-color: #f9f9f9;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: max-content;
+            z-index: 1;
+            font-size: 16px;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted black; /* Add a dotted underline */
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: max-content;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -75px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Example A Mating Disruption Calculator in Pistachios</h1>
+    <div class="container">
+        <form id="calculatorForm">
+            <div class="input-group">
+                <label for="yield">Yield (lbs/acre):</label>
+                <input type="number" id="yield" required>
+            </div>
+
+            <div class="input-group">
+                <label for="rejects">Rejects (%):</label>
+                <input type="number" id="rejects" required>
+            </div>
+
+            <div class="input-group">
+                <label for="commodityPrice">Price ($/lbs):</label>
+                <input type="number" id="commodityPrice" required>
+            </div>
+            <div>
+                <label for="priceOfMD">Price of Mating Disruption ($/acre):</label>
+                <input type="number" id="priceOfMD" required>
+            </div>
+
+            <button type="button" onclick="calculate()">Calculate</button>
+        
+
+        <div class="result">
+            <button class="note-button" data-note="Value = (Price * Yield * (1 - Rejects)) + (0.8 * Yield * (1 - Rejects) * QualityBonus)">
+                Hover for Equation 
+            </button>     
+
+            <h2><span class = "tooltip"><span class="tooltiptext">Value of Orchard WITHOUT Mating Disruption</span>Total Original Value:</span></h2>
+            <p id="totalOriginalValue">Waiting for input...</p>
+
+            <h2><span class = "tooltip"><span class="tooltiptext">Value of Orchard WITH Mating Disruption</span>Total Mating Disruption Value:</span></h2>
+            <p id="totalMDValue">Waiting for input...</p>
+
+            <h2><span class = "tooltip"><span class="tooltiptext">Difference = (Mating Disruption Value - Original Value) - Price of MD</span>Difference with cost of MD included:</span></h2>
+            <p id="adjustedDifference">Waiting for input...</p>
+
+            <h2><span class = "tooltip"><span class="tooltiptext">ROI = Difference / Price of MD</span>Return on Investment (ROI):</span></h2>
+            <p id="ROI">Waiting for input...</p>
+            
+            <h2>$ Difference due to Yield change:</h2>
+            <p id="YieldDifference">Waiting for input...</p>
+            
+            <h2>$ Difference due to Quality Bonus change:</h2>
+            <p id="QBDifference">Waiting for input...</p>
+
+            
+        </div>
+
+    </form>
+</div>
+
+    <script>
+        function calculate() {
+            var rejectsP = parseFloat(document.getElementById('rejects').value);
+            var yield1 = parseFloat(document.getElementById('yield').value);
+            var price1 = parseFloat(document.getElementById('commodityPrice').value);
+            var rejects1 = calculateRejects1(rejectsP);
+
+            var qualityBonus1 = calculateQualityBonus(rejects1);
+            var originalValue1 = calculateOriginalValue(yield1, price1, rejects1, qualityBonus1);
+            var rejectsMD1 = rejects1 * 0.5; // Calculating rejects1MD
+            var qualityBonusMD = calculateQualityBonusMD(rejectsMD1);
+            var MDValue1 = calculateMDValue(yield1, price1, rejectsMD1, qualityBonusMD);
+
+            var priceOfMD = parseFloat(document.getElementById('priceOfMD').value).toFixed(2);
+        
+            var totalOriginalValue = originalValue1.toFixed(2);
+            var totalMDValue = MDValue1.toFixed(2);
+
+            var differenceValue = (totalMDValue - totalOriginalValue).toFixed(2);
+            var adjustedDifference = (differenceValue - priceOfMD).toFixed(2);
+            var ROI = ((adjustedDifference / priceOfMD) * 100).toFixed(2);
+            var YieldDifference = calculateYieldDifference(yield1, price1, rejects1, rejectsMD1).toFixed(2);
+            var QBDifference = calculateQBDifference(yield1, rejects1, rejectsMD1, qualityBonus1, qualityBonusMD).toFixed(2);
+
+            document.getElementById('totalOriginalValue').innerHTML = `Total Original Value: <span style = "font-weight: bold;">$${totalOriginalValue}</span>`;
+            document.getElementById('totalMDValue').innerHTML = `Total MD Value: <span style = "font-weight: bold;">$${totalMDValue}</span>`;
+            document.getElementById('adjustedDifference').innerHTML = `Difference with cost of MD included: <span style = "font-weight: bold;">$${differenceValue} - $${priceOfMD} = $${adjustedDifference}</span>`;
+            document.getElementById('ROI').innerHTML = `Return on Investment (ROI): <span style = "font-weight: bold;">${ROI}%</span>`;
+            document.getElementById('YieldDifference').innerHTML = `$ Difference due to Yield change: <span style = "font-weight: bold;"> $${YieldDifference} </span>`;
+            document.getElementById('QBDifference').innerHTML = `$ Difference due to QB change: <span style = "font-weight: bold;"> $${QBDifference} </span>`;
+           
+            // Populate MD value equation
+
+        }
+    function calculateQualityBonus(rejects1) {
+        var qualityBonus;
+
+        if (rejects1 < 0) {
+            rejects1 = 0;
+            alert("Rejects cannot be negative. Setting to 0.");
+        } else if (rejects1 <= 0.0049) {
+            qualityBonus = 0.20;
+        } else if (rejects1 <= 0.0099) {
+            qualityBonus = 0.15;
+        } else if (rejects1 <= 0.0199) {
+            qualityBonus = 0.10;
+        } else if (rejects1 <= 0.0299) {
+            qualityBonus = 0.05;
+        } else if (rejects1 <= 0.0399) {
+            qualityBonus = 0;
+        } else if (rejects1 <= 0.0999) {
+            qualityBonus = -0.20;
+        } else {
+            qualityBonus = -0.50;
+        }
+
+        return qualityBonus;
+    }
+
+    
+    function calculateQualityBonusMD(rejectsMD1) {
+        var qualityBonusMD1;
+
+        if (rejectsMD1 < 0) {
+            rejectsMD1 = 0;
+            alert("Rejects cannot be negative. Setting to 0.");
+        } else if (rejectsMD1 <= 0.0049) {
+            qualityBonusMD = 0.20;
+        } else if (rejectsMD1 <= 0.0099) {
+            qualityBonusMD = 0.15;
+        } else if (rejectsMD1 <= 0.0199) {
+            qualityBonusMD = 0.10;
+        } else if (rejectsMD1 <= 0.0299) {
+            qualityBonusMD = 0.05;
+        } else if (rejectsMD1 <= 0.0399) {
+            qualityBonusMD = 0;
+        } else if (rejectsMD1 <= 0.0999) {
+            qualityBonusMD = -0.20;
+        } else {
+            qualityBonusMD = -0.50;
+        }
+
+        return qualityBonusMD;
+    }
+
+    function calculateRejects1(rejectsP) {
+        var rejects1 = rejectsP/100
+        return rejects1;
+    }
+
+    function calculateOriginalValue(yield1, price1, rejects1, qualityBonus1) {
+        var originalValue = (price1 * yield1 * (1 -  rejects1)) + ((0.8 * yield1) * (1 - rejects1) * qualityBonus1);
+        return originalValue;
+    }
+
+    function calculateMDValue(yield1, price1, rejectsMD1, qualityBonusMD) {
+        var MDValue = (price1 * yield1 * (1 - rejectsMD1)) + ((0.8 * yield1) * (1 - rejectsMD1) * qualityBonusMD);
+        return MDValue;
+    }
+    function calculateROI(DifferenceValue, priceOfMD) {
+        var ROI = (DifferenceValue / priceOfMD);
+        return ROI;
+    }
+    function calculateYieldDifference(yield1, price1, rejects1, rejectsMD1) {
+        var YieldDifference = ((price1 * yield1 * (1 - rejectsMD1)) - (price1 * yield1 * (1 -  rejects1)));
+        return YieldDifference;
+    }    
+    function calculateQBDifference(yield1, rejects1, rejectsMD1, qualityBonus1, qualityBonusMD) {
+        var QBDifference = (((0.8 * yield1) * (1 - rejectsMD1) * qualityBonusMD) - ((0.8 * yield1) * (1 - rejects1) * qualityBonus1));
+        return QBDifference;
+    }
+</script>
