@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TH Calc in Almonds</title>
+    <link rel="stylesheet" href="calculatorpistachios.css">
+</head>
+<body>
+    <div class="container">
+    <h1>Almond Timely Harvest Calculator</h1>
+    <form id="calculatorForm">
+        <div class="input-group">
+            <label for="yield">Yield (lbs/acre):</label>
+            <input type="number" id="yield" required>
+        </div>
+        
+        <div class = "input-group">
+            <label for="rejectsP"><span class = "tooltip"><span class="tooltiptext">Rejects recorded on Actual Harvest Date</span>Rejects (%):</span></label>
+            <input type="number" id="rejectsP" required>
+        </div>
+
+        <div class="input-group">
+            <label for="CommodityPrice">Price of Almonds ($/lbs):</label>
+            <input type="number" id="CommodityPrice" required>
+        </div>
+
+        <div class="input-group">
+            <label for="OptimalDate">Optimal Harvest Date:</label>
+            <input type="date" id="OptimalDate" required>
+        </div>
+
+        <div class="input-group">
+            <label for="ActualDate">Actual Harvest Date:</label>
+            <input type="date" id="ActualDate" required>
+        </div>
+
+        <button type="button" onclick="calculate()">Calculate</button>
+    
+
+    <div class="result">
+        <button class="note-button" data-note="Value = (Price * Yield * (1 - 2 * Rejects)) + (Yield * (1 - 2 * Rejects) * QualityBonus)">
+            Hover for Equation 
+        </button>      
+
+        <h2><span class = "tooltip"><span class="tooltiptext">Value of Orchard with Actual Harvest Date</span>Actual Value:</span></h2>
+        <p id="totalOriginalValue">Waiting for input...</p>
+
+        <h2><span class = "tooltip"><span class="tooltiptext">Value of Orchard with Optimal Harvest Date</span>Optimal Value:</span></h2>
+        <p id="totalOptimalValue">Waiting for input...</p>
+
+        <h2><span class = "tooltip"><span class="tooltiptext">Difference = Optimal Harvest Value - Actual Harvest Value</span>Difference:</span></h2>
+        <p id="Difference">Waiting for input...</p>
+        
+        <h2>$ Difference due to Yield change:</h2>
+        <p id="YieldDifference">Waiting for input...</p>
+        
+        <h2>$ Difference due to Quality Bonus change:</h2>
+        <p id="QBDifference">Waiting for input...</p>
+    </div>
+
+</form>
+    </div>
+
+    <script>
+        function calculate() {
+            var OptimalDate = new Date(document.getElementById('OptimalDate').value);
+            var ActualDate = new Date(document.getElementById('ActualDate').value);
+            var yield = parseFloat(document.getElementById('yield').value);
+            var price = parseFloat(document.getElementById('CommodityPrice').value);
+            var rejectsP = parseFloat(document.getElementById('rejectsP').value);
+            var rejects = rejectsP / 100;
+
+            var Days = (ActualDate - OptimalDate) / (1000 * 3600 * 24); // Difference in days
+            var rejectsOptimal = calculateRejectsOptimal(rejectsP, Days);
+            var qualityBonus1 = calculateQualityBonus(rejects);
+            var originalValue1 = calculateOriginalValue(yield, price, rejects, qualityBonus1);
+            var qualityBonusTH = calculateQualityBonusTH(rejectsOptimal);
+            var OptimalValue1 = calculateOptimalValue(yield, price, rejectsOptimal, qualityBonusTH);
+            var YieldDifference = calculateYieldDifference(yield, price, rejects, rejectsOptimal).toFixed(2);
+            var QBDifference = calculateQBDifference(yield, rejects, rejectsOptimal, qualityBonus1, qualityBonusTH).toFixed(2);
+
+            var totalOriginalValue = originalValue1.toFixed(2);
+            var totalOptimalValue = OptimalValue1.toFixed(2);
+            var differenceValue = (OptimalValue1 - originalValue1).toFixed(2);
+
+            document.getElementById('totalOriginalValue').innerHTML = `Total Original Value: <span style = "font-weight: bold;">$${totalOriginalValue}</span>`;
+            document.getElementById('totalOptimalValue').innerHTML = `Total Optimal Value: <span style = "font-weight: bold;">$${totalOptimalValue}</span>`;
+            document.getElementById('Difference').innerHTML = `Difference: <span style = "font-weight: bold;">$${differenceValue}</span>`;
+            document.getElementById('YieldDifference').innerHTML = `$ Difference due to Yield change: <span style = "font-weight: bold;"> $${YieldDifference} </span>`;
+            document.getElementById('QBDifference').innerHTML = `$ Difference due to QB change: <span style = "font-weight: bold;"> $${QBDifference} </span>`;
+        }
+
+// The rest of your functions remain unchanged
+
+
+        function calculateQualityBonus(rejects) {
+            var qualityBonus;
+
+            if (rejects < 0) {
+            rejects = 0;
+                alert("Rejects cannot be negative. Setting to 0.");
+            } else if (rejects <= 0.0049) {
+                qualityBonus = 0.01;
+            } else if (rejects <= 0.0099) {
+                qualityBonus = 0.0075;
+            } else if (rejects <= 0.0149) {
+                qualityBonus = 0.005;
+            } else if (rejects <= 0.0199) {
+                qualityBonus = 0.0025;
+            } else if (rejects <= 0.02) {
+                qualityBonus = 0.0;
+            } else if (rejects <= 0.0225) {
+                qualityBonus = -0.0025;
+            } else if (rejects <= 0.0250) {
+                qualityBonus = -0.005;
+            } else if (rejects <= 0.0275) {
+                qualityBonus = -0.0075;
+            } else if (rejects <= 0.03) {
+                qualityBonus = -0.01;
+            } else if (rejects <= 0.0325) {
+                qualityBonus = -0.01375;
+            } else if (rejects <= 0.0350) {
+                qualityBonus = -0.0175;
+            } else if (rejects <= 0.0375) {
+                qualityBonus = -0.02125;
+            } else if (rejects <= 0.04) {
+                qualityBonus = -0.025;
+            } else if (rejects <= 0.0425) {
+                qualityBonus = -0.02875;
+            } else if (rejects <= 0.045) {
+                qualityBonus = -0.0325;
+            } else if (rejects <= 0.0475) {
+                qualityBonus = -0.03625;
+            } else if (rejects <= 0.05) {
+                qualityBonus = -0.04;
+            } else if (rejects <= 0.0525) {
+                qualityBonus = -0.04375;
+            } else if (rejects <= 0.055) {
+                qualityBonus = -0.0475;
+            } else if (rejects <= 0.0575) {
+                qualityBonus = -0.05125;
+            } else if (rejects <= 0.06) {
+                qualityBonus = -0.055;
+            } else if (rejects <= 0.0625) {
+                qualityBonus = -0.06;
+            } else if (rejects <= 0.065) {
+                qualityBonus = -0.065;
+            } else if (rejects <= 0.0675) {
+                qualityBonus = -0.07;
+            } else if (rejects <= 0.07) {
+                qualityBonus = -0.075;
+            } else if (rejects <= 0.0725) {
+                qualityBonus = -0.08;
+            } else if (rejects <= 0.075) {
+                qualityBonus = -0.0850;
+            } else if (rejects <= 0.0775) {
+                qualityBonus = -0.09;
+            } else if (rejects <= 0.08) {
+                qualityBonus = -0.095;
+            } else if (rejects <= 0.0825) {
+                qualityBonus = -0.1;
+            } else if (rejects <= 0.085) {
+                qualityBonus = -0.105;
+            } else if (rejects <= 0.0875) {
+                qualityBonus = -0.110;
+            } else if (rejects <= 0.09) {
+                qualityBonus = -0.115;
+            } else if (rejects <= 0.0925) {
+                qualityBonus = -0.12;
+            } else if (rejects <= 0.095) {
+                qualityBonus = -0.1250;
+            } else if (rejects <= 0.0975) {
+                qualityBonus = -0.13;
+            } else if (rejects <= 0.1) {
+                qualityBonus = -0.135;
+            } else if (rejects <= 0.11) {
+                qualityBonus = -0.155;
+            } else if (rejects <= 0.12) {
+                qualityBonus = -0.175;
+            } else {
+                qualityBonus = -0.195;
+            }
+
+
+            return qualityBonus;
+        }
+
+        
+        function calculateQualityBonusTH(rejectsOptimal) {
+            var qualityBonusTH;
+
+            if (rejectsOptimal < 0) {
+            rejectsOptimal = 0;
+                alert("Rejects cannot be negative. Setting to 0.");
+            } else if (rejectsOptimal <= 0.0049) {
+                qualityBonusTH = 0.01;
+            } else if (rejectsOptimal <= 0.0099) {
+                qualityBonusTH = 0.0075;
+            } else if (rejectsOptimal <= 0.0149) {
+                qualityBonusTH = 0.005;
+            } else if (rejectsOptimal <= 0.0199) {
+                qualityBonusTH = 0.0025;
+            } else if (rejectsOptimal <= 0.02) {
+                qualityBonusTH = 0.0;
+            } else if (rejectsOptimal <= 0.0225) {
+                qualityBonusTH = -0.0025;
+            } else if (rejectsOptimal <= 0.0250) {
+                qualityBonusTH = -0.005;
+            } else if (rejectsOptimal <= 0.0275) {
+                qualityBonusTH = -0.0075;
+            } else if (rejectsOptimal <= 0.03) {
+                qualityBonusTH = -0.01;
+            } else if (rejectsOptimal <= 0.0325) {
+                qualityBonusTH = -0.01375;
+            } else if (rejectsOptimal <= 0.0350) {
+                qualityBonusTH = -0.0175;
+            } else if (rejectsOptimal <= 0.0375) {
+                qualityBonusTH = -0.02125;
+            } else if (rejectsOptimal <= 0.04) {
+                qualityBonusTH = -0.025;
+            } else if (rejectsOptimal <= 0.0425) {
+                qualityBonusTH = -0.02875;
+            } else if (rejectsOptimal <= 0.045) {
+                qualityBonusTH = -0.0325;
+            } else if (rejectsOptimal <= 0.0475) {
+                qualityBonusTH = -0.03625;
+            } else if (rejectsOptimal <= 0.05) {
+                qualityBonusTH = -0.04;
+            } else if (rejectsOptimal <= 0.0525) {
+                qualityBonusTH = -0.04375;
+            } else if (rejectsOptimal <= 0.055) {
+                qualityBonusTH = -0.0475;
+            } else if (rejectsOptimal <= 0.0575) {
+                qualityBonusTH = -0.05125;
+            } else if (rejectsOptimal <= 0.06) {
+                qualityBonusTH = -0.055;
+            } else if (rejectsOptimal <= 0.0625) {
+                qualityBonusTH = -0.06;
+            } else if (rejectsOptimal <= 0.065) {
+                qualityBonusTH = -0.065;
+            } else if (rejectsOptimal <= 0.0675) {
+                qualityBonusTH = -0.07;
+            } else if (rejectsOptimal <= 0.07) {
+                qualityBonusTH = -0.075;
+            } else if (rejectsOptimal <= 0.0725) {
+                qualityBonusTH = -0.08;
+            } else if (rejectsOptimal <= 0.075) {
+                qualityBonusTH = -0.0850;
+            } else if (rejectsOptimal <= 0.0775) {
+                qualityBonusTH = -0.09;
+            } else if (rejectsOptimal <= 0.08) {
+                qualityBonusTH = -0.095;
+            } else if (rejectsOptimal <= 0.0825) {
+                qualityBonusTH = -0.1;
+            } else if (rejectsOptimal <= 0.085) {
+                qualityBonusTH = -0.105;
+            } else if (rejectsOptimal <= 0.0875) {
+                qualityBonusTH = -0.110;
+            } else if (rejectsOptimal <= 0.09) {
+                qualityBonusTH = -0.115;
+            } else if (rejectsOptimal <= 0.0925) {
+                qualityBonusTH = -0.12;
+            } else if (rejectsOptimal <= 0.095) {
+                qualityBonusTH = -0.1250;
+            } else if (rejectsOptimal <= 0.0975) {
+                qualityBonusTH = -0.13;
+            } else if (rejectsOptimal <= 0.1) {
+                qualityBonusTH = -0.135;
+            } else if (rejectsOptimal <= 0.11) {
+                qualityBonusTH = -0.155;
+            } else if (rejectsOptimal <= 0.12) {
+                qualityBonusTH = -0.175;
+            } else {
+                qualityBonusTH = -0.195;
+            }
+
+
+            return qualityBonusTH;
+        }
+
+        function calculateRejectsOptimal(rejectsP, Days) {
+             if (Days >= rejectsP * 2) {
+                return .01;
+            } else {
+                return (rejectsP - (Days*0.5)) / 100;
+            }
+}
+
+
+
+        function calculateOriginalValue(yield, price, rejects, qualityBonus1) {
+            var originalValue = (price * yield * (1 - 2 * rejects)) + (yield * (1 - (2 * rejects)) * qualityBonus1);
+            return originalValue;
+        }
+
+        function calculateOptimalValue(yield, price, rejectsG, qualityBonusTH) {
+            var OptimalValue = (price * yield * (1 - 2 * rejectsG)) + (yield * (1 - (2 * rejectsG)) * qualityBonusTH);
+            return OptimalValue;
+        }
+
+        function calculateYieldDifference(yield, price, rejects1, rejectsG) {
+            var YieldDifference = (price * yield * (1 - 2 * rejectsG)) - (price * yield * (1 - 2 * rejects1));
+            return YieldDifference;
+        }
+
+        function calculateQBDifference(yield, rejects1, rejectsG, qualityBonus1, qualityBonusTH) {
+            var QBDifference = (yield * (1 - (2 * rejectsG)) * qualityBonusTH) - (yield * (1 - (2 * rejects1)) * qualityBonus1);
+            return QBDifference;
+        }
+    </script>
+</body>
+</html>

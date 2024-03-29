@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TH Calc in Almonds</title>
+    <link rel="stylesheet" href="calculatorstyles.css">
+</head>
+<body>
+    <div class="input-container">
+    <h1>Almond Timely Harvest Calculator</h1>
+    <form id="calculatorForm">
+
+        <label for="varietyname">Variety Name:</label>
+        <select id="varietyname" required class = "large-dropdown">
+            <option value="">Select a variety name</option>
+            <option value="NPInshell">Nonpareil Inshell</option>
+            <option value="NPMeats">Nonpareil Meats</option>
+            <option value="Pollenizer">Pollenizer</option>
+            <option value="Other">Other</option>
+        </select>
+
+        <div class="input-group">
+            <label for="yield">Yield (lbs/acre):</label>
+            <input type="number" id="yield" required>
+        </div>
+        
+        <div class = "input-group">
+            <label for="rejectsP"><span class = "tooltip"><span class="tooltiptext">Rejects recorded on Actual Harvest Date</span>Rejects (%):</span></label>
+            <input type="number" id="rejectsP" required>
+        </div>
+
+        <div class="input-group">
+            <label for="CommodityPrice">Price of Variety ($/lbs):</label>
+            <input type="number" id="CommodityPrice" required>
+        </div>
+
+        <div class="input-group">
+            <label for="OptimalDate">Optimal Harvest Date:</label>
+            <input type="date" id="OptimalDate" required>
+        </div>
+
+        <div class="input-group">
+            <label for="ActualDate">Actual Harvest Date:</label>
+            <input type="date" id="ActualDate" required>
+        </div>
+
+        <button type="button" onclick="calculate()">Calculate</button>
+    
+
+    <div class="result">
+        <button class="note-button" data-note="Value = (Price * Yield * (1 - 2 * Rejects)) + (Yield * (1 - 2 * Rejects) * QualityBonus)">
+            Hover for Equation 
+        </button>      
+
+        <h2><span class = "tooltip"><span class="tooltiptext">Value of Orchard with Actual Harvest Date</span>Actual Value:</span></h2>
+        <p id="totalOriginalValue">Waiting for input...</p>
+
+        <h2><span class = "tooltip"><span class="tooltiptext">Value of Orchard with Optimal Harvest Date</span>Optimal Value:</span></h2>
+        <p id="totalOptimalValue">Waiting for input...</p>
+
+        <h2><span class = "tooltip"><span class="tooltiptext">Difference = Optimal Harvest Value - Actual Harvest Value</span>Difference:</span></h2>
+        <p id="Difference">Waiting for input...</p>
+        
+        <h2>$ Difference due to Yield change:</h2>
+        <p id="YieldDifference">Waiting for input...</p>
+        
+        <h2>$ Difference due to Quality Bonus change:</h2>
+        <p id="QBDifference">Waiting for input...</p>
+    </div>
+
+</form>
+    </div>
+
+    <script>
+        function calculate() {
+            var OptimalDate = new Date(document.getElementById('OptimalDate').value);
+            var ActualDate = new Date(document.getElementById('ActualDate').value);
+            var yield = parseFloat(document.getElementById('yield').value);
+            var price = parseFloat(document.getElementById('CommodityPrice').value);
+            var rejectsP = parseFloat(document.getElementById('rejectsP').value);
+            var varietyname = (document.getElementById('varietyname')).value;
+            var rejects = rejectsP / 100;
+
+            var Days = (ActualDate - OptimalDate) / (1000 * 3600 * 24); // Difference in days
+            var rejectsOptimal = calculateRejectsOptimal(rejectsP, Days);
+            var qualityBonus1 = calculateQualityBonus(varietyname, rejects);
+            var originalValue1 = calculateOriginalValue(yield, price, rejects, qualityBonus1);
+            var qualityBonusTH = calculateQualityBonusTH(varietyname, rejectsOptimal);
+            var OptimalValue1 = calculateOptimalValue(yield, price, rejectsOptimal, qualityBonusTH);
+            var YieldDifference = calculateYieldDifference(yield, price, rejects, rejectsOptimal).toFixed(2);
+            var QBDifference = calculateQBDifference(yield, rejects, rejectsOptimal, qualityBonus1, qualityBonusTH).toFixed(2);
+
+            var totalOriginalValue = originalValue1.toFixed(2);
+            var totalOptimalValue = OptimalValue1.toFixed(2);
+            var differenceValue = (OptimalValue1 - originalValue1).toFixed(2);
+
+            document.getElementById('totalOriginalValue').innerHTML = `Total Original Value: <span style = "font-weight: bold;">$${totalOriginalValue}</span>`;
+            document.getElementById('totalOptimalValue').innerHTML = `Total Optimal Value: <span style = "font-weight: bold;">$${totalOptimalValue}</span>`;
+            document.getElementById('Difference').innerHTML = `Difference: <span style = "font-weight: bold;">$${differenceValue}</span>`;
+            document.getElementById('YieldDifference').innerHTML = `$ Difference due to Yield change: <span style = "font-weight: bold;"> $${YieldDifference} </span>`;
+            document.getElementById('QBDifference').innerHTML = `$ Difference due to QB change: <span style = "font-weight: bold;"> $${QBDifference} </span>`;
+        }
+
+// The rest of your functions remain unchanged
+
+
+function calculateQualityBonus(varietyname, rejects) {
+            var qualityBonus;
+        if (varietyname == 'NPMeats') {
+
+        
+            if (rejects < 0) {
+            rejects = 0;
+                alert("Rejects cannot be negative. Setting to 0.");
+            } else if (rejects < 0.006) {
+                qualityBonus = 0.185;
+            } else if (rejects < 0.011) {
+                qualityBonus = 0.175;
+            } else if (rejects < 0.016) {
+                qualityBonus = 0.165;
+            } else if (rejects < 0.02) {
+                qualityBonus = 0.155;
+            } else if (rejects < 0.021) {
+                qualityBonus = 0.115;
+            } else if (rejects < 0.026) {
+                qualityBonus = 0.065;
+            } else if (rejects < 0.031) {
+                qualityBonus = 0.05;
+            } else if (rejects < 0.041) {
+                qualityBonus = 0.045;
+            } else if (rejects < 0.051) {
+                qualityBonus = 0.035;
+            } else if (rejects < 0.061) {
+                qualityBonus = 0.025;
+            } else if (rejects < 0.071) {
+                qualityBonus = 0.015;
+            } else if (rejects < 0.081) {
+                qualityBonus = 0.005;
+            } else if (rejects < 0.091) {
+                qualityBonus = -0.005;
+            } else {
+                qualityBonus = -0.015;
+            }
+
+            }
+
+            else if(varietyname == 'NPInshell') {
+                if (rejects < 0) {
+            rejects = 0;
+                alert("Rejects cannot be negative. Setting to 0.");
+            } else if (rejects < 0.006) {
+                qualityBonus = 0.215;
+            } else if (rejects < 0.011) {
+                qualityBonus = 0.205;
+            } else if (rejects < 0.016) {
+                qualityBonus = 0.195;
+            } else if (rejects < 0.021) {
+                qualityBonus = 0.185;
+            } else if (rejects < 0.026) {
+                qualityBonus = 0.175;
+            } else if (rejects < 0.031) {
+                qualityBonus = 0.16;
+            } else if (rejects < 0.041) {
+                qualityBonus = 0.025;
+            } else if (rejects < 0.051) {
+                qualityBonus = 0.015;
+            } else if (rejects < 0.061) {
+                qualityBonus = 0.005;
+            } else if (rejects < 0.071) {
+                qualityBonus = -0.005;
+            } else if (rejects < 0.081) {
+                qualityBonus = -0.015;
+            } else if (rejects < 0.000) {
+                qualityBonus = -0.025;
+            } else {
+                qualityBonus = -0.035;
+            }
+
+
+            }
+            
+            else if(varietyname == 'Pollenizer') {
+                if (rejects < 0) {
+            rejects = 0;
+                alert("Rejects cannot be negative. Setting to 0.");
+            } else if (rejects < 0.006) {
+                qualityBonus = 0.14;
+            } else if (rejects < 0.011) {
+                qualityBonus = 0.13;
+            } else if (rejects < 0.016) {
+                qualityBonus = 0.12;
+            } else if (rejects < 0.021) {
+                qualityBonus = 0.11;
+            } else if (rejects < 0.026) {
+                qualityBonus = 0.06;
+            } else if (rejects < 0.031) {
+                qualityBonus = 0.05;
+            } else if (rejects < 0.041) {
+                qualityBonus = 0.04;
+            } else if (rejects < 0.051) {
+                qualityBonus = 0.03;
+            } else if (rejects < 0.061) {
+                qualityBonus = 0.02;
+            } else if (rejects < 0.071) {
+                qualityBonus = 0.01;
+            } else if (rejects < 0.081) {
+                qualityBonus = 0.00;
+            } else if (rejects < 0.091) {
+                qualityBonus = -0.01;
+            } else {
+                qualityBonus = -0.02;
+            }
+
+            }
+
+            else {
+                qualityBonus = 0;
+            }
+
+            return qualityBonus
+        
+        }
+
+        
+        function calculateQualityBonusTH(varietyname, rejectsOptimal) {
+            var qualityBonusTH;
+
+            if (varietyname == 'NPMeats') {
+
+        
+            if (rejectsOptimal < 0) {
+            rejectsOptimal = 0;
+                alert("Rejects cannot be negative. Setting to 0.");
+            } else if (rejectsOptimal < 0.006) {
+                qualityBonusTH = 0.185;
+            } else if (rejectsOptimal < 0.011) {
+                qualityBonusTH = 0.175;
+            } else if (rejectsOptimal < 0.016) {
+                qualityBonusTH = 0.165;
+            } else if (rejectsOptimal < 0.02) {
+                qualityBonusTH = 0.155;
+            } else if (rejectsOptimal < 0.021) {
+                qualityBonusTH = 0.115;
+            } else if (rejectsOptimal < 0.026) {
+                qualityBonusTH = 0.065;
+            } else if (rejectsOptimal < 0.031) {
+                qualityBonusTH = 0.05;
+            } else if (rejectsOptimal < 0.041) {
+                qualityBonusTH = 0.045;
+            } else if (rejectsOptimal < 0.051) {
+                qualityBonusTH = 0.035;
+            } else if (rejectsOptimal < 0.061) {
+                qualityBonusTH = 0.025;
+            } else if (rejectsOptimal < 0.071) {
+                qualityBonusTH = 0.015;
+            } else if (rejectsOptimal < 0.081) {
+                qualityBonusTH = 0.005;
+            } else if (rejectsOptimal < 0.091) {
+                qualityBonusTH = -0.005;
+            } else {
+                qualityBonusTH = -0.015;
+            }
+
+            }
+
+            else if(varietyname == 'NPInshell') {
+                if (rejectsOptimal < 0) {
+            rejectsOptimal = 0;
+                alert("Rejects cannot be negative. Setting to 0.");
+            } else if (rejectsOptimal < 0.006) {
+                qualityBonusTH = 0.215;
+            } else if (rejectsOptimal < 0.011) {
+                qualityBonusTH = 0.205;
+            } else if (rejectsOptimal < 0.016) {
+                qualityBonusTH = 0.195;
+            } else if (rejectsOptimal < 0.021) {
+                qualityBonusTH = 0.185;
+            } else if (rejectsOptimal < 0.026) {
+                qualityBonusTH = 0.175;
+            } else if (rejectsOptimal < 0.031) {
+                qualityBonusTH = 0.16;
+            } else if (rejectsOptimal < 0.041) {
+                qualityBonusTH = 0.025;
+            } else if (rejectsOptimal < 0.051) {
+                qualityBonusTH = 0.015;
+            } else if (rejectsOptimal < 0.061) {
+                qualityBonusTH = 0.005;
+            } else if (rejectsOptimal < 0.071) {
+                qualityBonusTH = -0.005;
+            } else if (rejectsOptimal < 0.081) {
+                qualityBonusTH = -0.015;
+            } else if (rejectsOptimal < 0.000) {
+                qualityBonusTH = -0.025;
+            } else {
+                qualityBonusTH = -0.035;
+            }
+
+
+            }
+
+            else if(varietyname == 'Pollenizer') {
+                if (rejectsOptimal < 0) {
+            rejectsOptimal = 0;
+                alert("Rejects cannot be negative. Setting to 0.");
+            } else if (rejectsOptimal < 0.006) {
+                qualityBonusTH = 0.14;
+            } else if (rejectsOptimal < 0.011) {
+                qualityBonusTH = 0.13;
+            } else if (rejectsOptimal < 0.016) {
+                qualityBonusTH = 0.12;
+            } else if (rejectsOptimal < 0.021) {
+                qualityBonusTH = 0.11;
+            } else if (rejectsOptimal < 0.026) {
+                qualityBonusTH = 0.06;
+            } else if (rejectsOptimal < 0.031) {
+                qualityBonusTH = 0.05;
+            } else if (rejectsOptimal < 0.041) {
+                qualityBonusTH = 0.04;
+            } else if (rejectsOptimal < 0.051) {
+                qualityBonusTH = 0.03;
+            } else if (rejectsOptimal < 0.061) {
+                qualityBonusTH = 0.02;
+            } else if (rejectsOptimal < 0.071) {
+                qualityBonusTH = 0.01;
+            } else if (rejectsOptimal < 0.081) {
+                qualityBonusTH = 0.00;
+            } else if (rejectsOptimal < 0.091) {
+                qualityBonusTH = -0.01;
+            } else {
+                qualityBonusTH = -0.02;
+            }
+
+            }
+
+            else {
+                qualityBonusTH = 0;
+            }
+
+            return qualityBonusTH
+
+            }
+
+        function calculateRejectsOptimal(rejectsP, Days) {
+             if (Days >= rejectsP * 2) {
+                return .01;
+            } else {
+                return (rejectsP - (Days*0.5)) / 100;
+            }
+}
+
+
+
+        function calculateOriginalValue(yield, price, rejects, qualityBonus1) {
+            var originalValue = (price * yield * (1 - 2 * rejects)) + (yield * (1 - (2 * rejects)) * qualityBonus1);
+            return originalValue;
+        }
+
+        function calculateOptimalValue(yield, price, rejectsOptimal, qualityBonusTH) {
+            var OptimalValue = (price * yield * (1 - 2 * rejectsOptimal)) + (yield * (1 - (2 * rejectsOptimal)) * qualityBonusTH);
+            return OptimalValue;
+        }
+
+        function calculateYieldDifference(yield, price, rejects, rejectsOptimal) {
+            var YieldDifference = (price * yield * (1 - 2 * rejectsOptimal)) - (price * yield * (1 - 2 * rejects));
+            return YieldDifference;
+        }
+
+        function calculateQBDifference(yield, rejects, rejectsOptimal, qualityBonus1, qualityBonusTH) {
+            var QBDifference = (yield * (1 - (2 * rejectsOptimal)) * qualityBonusTH) - (yield * (1 - (2 * rejects)) * qualityBonus1);
+            return QBDifference;
+        }
+    </script>
+</body>
+</html>

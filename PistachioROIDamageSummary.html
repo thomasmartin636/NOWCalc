@@ -4,125 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pistachio IPM Research Summary</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #15bcbc;
-            text-align: center;
-            padding-top: 50px; /* Add some top padding for better appearance */
-        }
-
-        h1 {
-            font-size: 50px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        .small-text {
-            font-size: 14px;
-            margin-top: 5px;
-            margin-bottom: 20px;
-        }
-
-        .large-text {
-            font-size: 25px;
-            margin-top: 30px;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-
-
-        .tooltip {
-            position: relative;
-            display: inline-block;
-            border-bottom: 1px dotted black; /* Add a dotted underline */
-        }
-
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 150px;
-            background-color: #555;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 5px 0;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -75px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .tooltip .tooltiptext::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: #555 transparent transparent transparent;
-        }
-
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
-
-        p {
-            font-size: 14px;
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-
-        p.intro {
-            text-align: center;
-            font-size: 20px;
-            margin-top: 30px;
-            margin-bottom: 30px;
-            padding: 0 20px;
-        }
-
-        p.intro span {
-            font-weight: bold;
-            color: black;
-        }
-
-        .bullet-list {
-            background-color:#fff;
-            border-radius: 8px; /* Add border radius for rounded corners */
-            padding: 20px; /* Add padding inside the box */
-            margin: 0 auto; /* Center the box horizontally */
-            width: 25%; /* Set width of the box to 50% of the viewport */
-            text-align: left; /* Align text to the left within the box */
-            border: 2px solid #333; /* Add border */
-        }
-
-
-        ul {
-            list-style-type: disc;
-            margin-left: 30px;
-        }
-
-        button {
-            font-size: 20px;
-            padding: 15px 30px;
-            margin: 10px;
-            background-color: navy;
-            color:#fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #fff;
-            color: black;
-        }
-    </style>
+    <link rel="stylesheet" href="newstyles.css">
 </head>
 <body>
     <h1>Pistachio IPM Research Summary</h1>
@@ -137,10 +19,7 @@
     </ul>
     <p class="intro">The model uses academic research of each practice to INDIVIDUALLY estimate an expected reduction in damage. Then, it combines the estimate with information from processors to estimate the dollar value of the damage reduction.</p>
     <p class="large-text">Which IPM Practice do you want to look at first?</p>
-    <button onclick="location.href='PistachioProcessorPageWS.html'">Winter Sanitation</button>
     <button onclick="location.href='PistachioProcessorPageMD.html'">Mating Disruption</button>
-    <button onclick="location.href='PistachioProcessorPageMon.html'">Monitoring</button>
-    <button onclick="location.href='PistachioProcessorPageTH.html'">Timely Harvest</button>    
-    <button onclick="location.href='PistachioProcessorPageChem.html'">Chemical Application</button>
+    <p>Analysis on Winter Sanitation, Timely Harvest and Chemical Application coming soon!</p>
 </body>
 </html>

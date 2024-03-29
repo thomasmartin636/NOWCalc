@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MD Calc in Almonds</title>
+    <link rel="stylesheet" href="calculatorstyles.css">
+</head>
+<body>
+    <div class="container">
+    <h1>Almond Mating Disruption Calculator</h1>
+    
+    <form id="calculatorForm">
+        <div class="input-container">
+            <div class="column">
+                
+                <label for="yield1">Yield Variety 1 (lbs/acre):</label>
+                <input type="number" id="yield1" required>
+
+                <label for="rejects1">Rejects Variety 1 (%):</label>
+                <input type="number" id="rejectsP1" required> 
+
+                <label for="commodityPrice1">Price Variety 1 ($/lbs):</label>
+                <input type="number" id="commodityPrice1" required>
+            </div>
+    
+            <div class="column">
+                
+                <label for="yield2">Yield Variety 2 (lbs/acre):</label>
+                <input type="number" id="yield2" required>
+
+                <label for="rejects2">Rejects Variety 2 (%):</label>
+                <input type="number" id="rejectsP2" required>   
+
+                <label for="commodityPrice2">Price Variety 2 ($/lbs):</label>
+                <input type="number" id="commodityPrice2" required>
+            </div>
+    
+            <div class="column">
+                <label for="yield3">Yield Variety 3 (lbs/acre):</label>
+                <input type="number" id="yield3" required>
+
+                <label for="rejects3">Rejects Variety 3 (%):</label>
+                <input type="number" id="rejectsP3" required>
+                
+                <label for="commodityPrice3">Price Variety 3 ($/lbs):</label>
+                <input type="number" id="commodityPrice3" required>
+            </div>
+        </div>
+    
+        <div>
+            <label for="priceOfMD">Cost of Mating Disruption ($/acre):</label>
+            <input type="number" id="priceOfMD" required>
+        </div>
+    
+        <button type="button" onclick="calculate()">Calculate</button>
+    
+        <div class="result">
+            <h2>Total Original Value:</h2>
+            <p id="totalOriginalValue">Waiting for input...</p>
+    
+            <h2>Total Mating Disruption Value:</h2>
+            <p id="totalMDValue">Waiting for input...</p>
+    
+            <h2>Difference with cost of MD included:</h2>
+            <p id="adjustedDifference">Waiting for input...</p>
+
+            <h2>Return on Investment (ROI):</h2>
+            <p id="ROI">Waiting for input...</p>
+
+        </div>
+    </form>
+    </div>
+
+    <script>
+        function calculate() {
+            var rejectsP1 = parseFloat(document.getElementById('rejectsP1').value);
+            var rejects1 = calculateRejects1(rejectsP1);
+            var yield1 = parseFloat(document.getElementById('yield1').value);
+            var price1 = parseFloat(document.getElementById('commodityPrice1').value);
+
+            var originalValue1 = calculateOriginalValue(yield1, price1, rejects1);
+            var rejectsMD1 = rejects1 * 0.5; // Calculating rejects1MD
+            var MDValue1 = calculateMDValue(yield1, price1, rejectsMD1)
+
+            var rejectsP2 = parseFloat(document.getElementById('rejectsP2').value);
+            var rejects2 = calculateRejects2(rejectsP2);
+            var yield2 = parseFloat(document.getElementById('yield2').value);
+            var price2 = parseFloat(document.getElementById('commodityPrice2').value);
+
+            var originalValue2 = calculateOriginalValue(yield2, price2, rejects2);
+            var rejectsMD2 = rejects2 * 0.5; // Calculating rejects2MD
+            var MDValue2 = calculateMDValue(yield2, price2, rejectsMD2)
+
+            var rejectsP3 = parseFloat(document.getElementById('rejectsP3').value);
+            var rejects3 = calculateRejects1(rejectsP3);
+            var yield3 = parseFloat(document.getElementById('yield3').value);
+            var price3 = parseFloat(document.getElementById('commodityPrice3').value);
+
+            var originalValue3 = calculateOriginalValue(yield3, price3, rejects3);
+            var rejectsMD3 = rejects3 * 0.5; // Calculating rejects3MD
+            var MDValue3 = calculateMDValue(yield3, price3, rejectsMD3)
+
+            var priceOfMD = parseFloat(document.getElementById('priceOfMD').value);
+            
+
+            var totalOriginalValue = (originalValue1 + originalValue2 + originalValue3).toFixed(2);
+            var totalMDValue = (MDValue1 + MDValue2 + MDValue3).toFixed(2);
+
+            var differenceValue = totalMDValue - totalOriginalValue;
+            var adjustedDifference = (differenceValue - priceOfMD).toFixed(2);
+            var ROI = ((adjustedDifference / priceOfMD) * 100).toFixed(2);
+
+           
+
+
+            document.getElementById('totalOriginalValue').textContent = `Total Original Value: $${totalOriginalValue}`;
+            document.getElementById('totalMDValue').textContent = `Total MD Value: $${totalMDValue}`;
+            document.getElementById('adjustedDifference').innerHTML = `Difference with Cost of MD included: <span style = "font-weight: bold;">$${differenceValue} - $${priceOfMD} = $${adjustedDifference}</span>`;
+            document.getElementById('ROI').textContent = `Return on Investment (ROI): ${ROI}%`;
+
+
+        }
+
+        function calculateRejects1(rejectsP1) {
+            var rejects1 = rejectsP1/100
+            return rejects1;
+        }
+
+        function calculateRejects2(rejectsP2) {
+            var rejects2 = rejectsP2/100
+            return rejects2;
+        }
+
+        function calculateRejects3(rejectsP3) {
+            var rejects3 = rejectsP3/100
+            return rejects3;
+        }
+
+
+        function calculateOriginalValue(yield, price, rejects) {
+            var originalValue = (price * yield * (1 - 2 * rejects));
+            return originalValue;
+        }
+
+        function calculateMDValue(yield, price, rejectsMD) {
+            var MDValue = (price * yield * (1 - 2 * rejectsMD));
+            return MDValue;
+        }
+        function calculateROI(DifferenceValue, priceOfMD) {
+            var ROI = (DifferenceValue / priceofMD);
+            return ROI;
+        }
+    </script>
+</body>
+</html>

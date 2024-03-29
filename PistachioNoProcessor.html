@@ -3,120 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Horizon Nut MD Calc</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #15bcbc;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
-
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-            position: absolute;
-            top: 2%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            align-items: center;
-            justify-content:center;
-            width: max-content;
-        }
-
-        form {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 500px;
-        }
-        .container {
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            flex-direction: column;
-            height: 100vh;
-            margin-top: 170px;
-        }
-
-        .input-container {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            margin-top: 150px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-        }
-
-        input {
-            width: calc(100% - 16px);
-            padding: 8px;
-            margin-bottom: 16px;
-            box-sizing: border-box;
-        }
-        .input-group {
-             display: flex;
-             flex-direction: column;
-            margin-bottom: 15px;
-            }
-
-        .input-group label {
-            margin-bottom: 5px;
-        }
-
-        button {
-            background-color: navy;
-            color: #fff;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        h2 {
-            margin-top: 20px;
-            color: #333;
-        }
-
-        p {
-            color: #666;
-        }
-
-        .note-button {
-            background-color: transparent;
-            border: none;
-            color: blue;
-            cursor: help; /* Change cursor to pointer on hover */
-            text-decoration: underline; /* Underline text on hover */
-            font-size: 18px;
-            padding: 10px;
-            text-align: left;
-            margin-top: 20px;
-        }
-        
-        .note-button:hover::after {
-            content: attr(data-note); /* Show note when hovered */
-            position: absolute;
-            background-color: #f9f9f9;
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            width: max-content;
-            z-index: 1;
-            font-size: 16px;
-        }
-        
-    </style>
+    <title>Pistachio MD Calc</title>
+    <link rel="stylesheet" href="calculatorpistachios.css">
 </head>
 <body>
     <h1>Mating Disruption Calculator in Pistachios (No Quality Bonus Included) </h1>
@@ -149,78 +37,59 @@
                 Hover for Equation 
             </button>     
 
-            <h2>Total Original Value:</h2>
+            <h2><span class = "tooltip"><span class="tooltiptext">Value of Orchard WITHOUT Mating Disruption</span>Total Original Value:</span></h2>
             <p id="totalOriginalValue">Waiting for input...</p>
 
-            <h2>Total Mating Disruption Value:</h2>
+            <h2><span class = "tooltip"><span class="tooltiptext">Value of Orchard WITH Mating Disruption</span>Total Mating Disruption Value:</span></h2>
             <p id="totalMDValue">Waiting for input...</p>
 
-            <h2>Difference with cost of MD included:</h2>
+            <h2><span class = "tooltip"><span class="tooltiptext">Difference = (Mating Disruption Value - Original Value) - Price of MD</span>Difference with cost of MD included:</span></h2>
             <p id="adjustedDifference">Waiting for input...</p>
 
-            <h2>Return on Investment (ROI):</h2>
+            <h2><span class = "tooltip"><span class="tooltiptext">ROI = Difference / Price of MD</span>Return on Investment (ROI):</span></h2>
             <p id="ROI">Waiting for input...</p>
-
-
-            
-            <h2>Original Value Equation:</h2>
-            <p id="originalValueEquation">Waiting for input...</p>
-            
-            <h2>MD Value Equation:</h2>
-            <p id="MDValueEquation">Waiting for input...</p>
-
-
 
         </div>
 
     </form>
 </div>
 
-    <script>
-        function calculate() {
-            var rejects1 = parseFloat(document.getElementById('rejects').value);
-            var yield1 = parseFloat(document.getElementById('yield').value);
-            var price1 = parseFloat(document.getElementById('commodityPrice').value);
+<script>
+    function calculate() {
+        var rejects1 = parseFloat(document.getElementById('rejects').value);
+        var yield1 = parseFloat(document.getElementById('yield').value);
+        var price1 = parseFloat(document.getElementById('commodityPrice').value);
+        var rejects = calculateRejects1(rejects1);
 
-            var originalValue1 = calculateOriginalValue(yield1, price1, rejects1);
-            var rejectsMD1 = rejects1 * 0.5; // Calculating rejects1MD
-            var MDValue1 = calculateMDValue(yield1, price1, rejectsMD1);
+        var originalValue1 = calculateOriginalValue(yield1, price1, rejects);
+        var rejectsMD1 = rejects * 0.5; // Calculating rejects1MD
+        var MDValue1 = calculateMDValue(yield1, price1, rejectsMD1);
+        var priceOfMD = parseFloat(document.getElementById('priceOfMD').value);
+    
+        var totalOriginalValue = originalValue1.toFixed(2);
+        var totalMDValue = MDValue1.toFixed(2);
 
-            var priceOfMD = parseFloat(document.getElementById('priceOfMD').value);
-        
-            var totalOriginalValue = originalValue1.toFixed(2);
-            var totalMDValue = MDValue1.toFixed(2);
+        var differenceValue = totalMDValue - totalOriginalValue;
+        var adjustedDifference = (differenceValue - priceOfMD).toFixed(2);
+        var ROI = ((adjustedDifference / priceOfMD) * 100).toFixed(2);
 
-            var differenceValue = totalMDValue - totalOriginalValue;
-            var adjustedDifference = (differenceValue - priceOfMD).toFixed(2);
-            var ROI = ((adjustedDifference / priceOfMD) * 100).toFixed(2);
+        document.getElementById('totalOriginalValue').innerHTML = `Total Original Value: <span style = "font-weight: bold;">$${totalOriginalValue}</span>`;
+        document.getElementById('totalMDValue').innerHTML = `Total MD Value: <span style = "font-weight: bold;">$${totalMDValue}</span>`;
+        document.getElementById('adjustedDifference').innerHTML = `Difference with cost of MD included: <span style = "font-weight: bold;">$${differenceValue} - $${priceOfMD} = $${adjustedDifference}</span>`;
+        document.getElementById('ROI').innerHTML = `Return on Investment (ROI): <span style = "font-weight: bold;">${ROI}%</span>`;
+    }
 
-            document.getElementById('totalOriginalValue').innerHTML = `Total Original Value: <span style = "font-weight: bold;">$${totalOriginalValue}</span>`;
-            document.getElementById('totalMDValue').innerHTML = `Total MD Value: <span style = "font-weight: bold;">$${totalMDValue}</span>`;
-            document.getElementById('adjustedDifference').innerHTML = `Difference with Cost of MD included: <span style = "font-weight: bold;">$${adjustedDifference}</span>`;
-            document.getElementById('ROI').innerHTML = `Return on Investment (ROI): <span style = "font-weight: bold;">${ROI}%</span>`;
+    function calculateRejects1(rejectsP) {
+        return rejectsP / 100;
+    }
 
-            var originalValueEquation = `$${totalOriginalValue} = ($${price1}/lbs * ${yield1}lbs/acre * (1 - <span style="color: red;">${rejects1}</span>))`;
-            document.getElementById('originalValueEquation').innerHTML = originalValueEquation;
-            
-            // Populate MD value equation
-            var MDValueEquation = `$${totalMDValue} = ($${price1}/lbs * ${yield1}lbs/acre * (1 - <span style="color: red;">${rejectsMD1}</span>))`;
-            document.getElementById('MDValueEquation').innerHTML = MDValueEquation;
-        
-        }
-
-
-    function calculateOriginalValue(yield1, price1, rejects1) {
-        var originalValue = (price1 * yield1 * (1 -  rejects1))
-        return originalValue;
+    function calculateOriginalValue(yield1, price1, rejects) {
+        return price1 * yield1 * (1 -  rejects);
     }
 
     function calculateMDValue(yield1, price1, rejectsMD1) {
-        var MDValue = (price1 * yield1 * (1 - rejectsMD1))
-        return MDValue;
-    }
-    function calculateROI(DifferenceValue, priceOfMD) {
-        var ROI = (DifferenceValue / priceOfMD);
-        return ROI;
+        return price1 * yield1 * (1 - rejectsMD1);
     }
 </script>
+</body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WS Calc in Almonds</title>
+    <link rel="stylesheet" href="calculatorpistachios.css">
+</head>
+<body>
+    <div class="container">
+    <h1>Almond Winter Sanitation Calculator</h1>
+    
+    <form id="calculatorForm">
+        <div class="input-group">
+            <label for="yield">Yield (lbs/acre):</label>
+            <input type="number" id="yield" required>
+        </div>
+
+        <div class="input-group">
+            <label for="Mummies1">Original Mummies/Tree:</label>
+            <input type="number" id="Mummies1" required>
+        </div>
+
+        <div class="input-group">
+            <label for="MummiesG">Goal Mummies/Tree:</label>
+            <input type="number" id="MummiesG" required>
+        </div>
+
+        <div class="input-group">
+            <label for="CommodityPrice">Price of Almonds ($/lbs):</label>
+            <input type="number" id="CommodityPrice" required>
+        </div>
+
+        <div>
+            <label for="priceOfWS">Cost of Winter Sanitation ($/acre):</label>
+            <input type="number" id="priceOfWS" required>
+        </div>
+
+        <button type="button" onclick="calculate()">Calculate</button>
+    
+
+    <div class="result">
+        <button class="note-button" data-note="Value = (Price * Yield * (1 - 2 * Rejects)) + (Yield * (1 - 2 * Rejects) * QualityBonus)">
+            Hover for Equation 
+        </button>      
+
+        <h2><span class = "tooltip"><span class="tooltiptext">Value of Orchard with Original Mummies/Tree</span>Total Original Value:</span></h2>
+        <p id="totalOriginalValue">Waiting for input...</p>
+
+        <h2><span class = "tooltip"><span class="tooltiptext">Value of Orchard with Goal Mummies/Tree</span>Total Winter Sanitation Value:</span></h2>
+        <p id="totalWSValue">Waiting for input...</p>
+
+        <h2><span class = "tooltip"><span class="tooltiptext">Difference = (Goal Mummies/Tree Value - Original Mummies/Tree Value) - Price of Winter Sanitation</span>Difference with cost of Sanitation included:</span></h2>
+        <p id="adjustedDifference">Waiting for input...</p>
+
+        <h2><span class = "tooltip"><span class="tooltiptext">ROI = Difference / Price of WS</span>Return on Investment (ROI):</span></h2>
+        <p id="ROI">Waiting for input...</p>
+        
+        <h2>$ Difference due to Yield change:</h2>
+        <p id="YieldDifference">Waiting for input...</p>
+        
+        <h2>$ Difference due to Quality Bonus change:</h2>
+        <p id="QBDifference">Waiting for input...</p>
+    </div>
+
+</form>
+    </div>
+
+    <script>
+            function calculate() {
+                var Mummies1 = parseFloat(document.getElementById('Mummies1').value);
+                var MummiesG = parseFloat(document.getElementById('MummiesG').value); // Added this line
+                var yield = parseFloat(document.getElementById('yield').value);
+                var price = parseFloat(document.getElementById('CommodityPrice').value);
+                var priceOfWS = parseFloat(document.getElementById('priceOfWS').value);
+
+                var rejects1 = calculateRejects1(Mummies1);
+                var qualityBonus1 = calculateQualityBonus(rejects1);
+                var originalValue1 = calculateOriginalValue(yield, price, rejects1, qualityBonus1); // Corrected parameter name from CommodityPrice to price
+                var rejectsG = calculateRejectsG(MummiesG);
+                var qualityBonusWS = calculateQualityBonusWS(rejectsG);
+                var WSValue1 = calculateWSValue(yield, price, rejectsG, qualityBonusWS); // Corrected parameter name from CommodityPrice to price
+                var YieldDifference = calculateYieldDifference(yield, price, rejects1, rejectsG).toFixed(2); // Corrected parameter names
+                var QBDifference = calculateQBDifference(yield, rejects1, rejectsG, qualityBonus1, qualityBonusWS).toFixed(2); // Corrected parameter names
+
+                var priceOfWS = parseFloat(document.getElementById('priceOfWS').value);
+                        
+
+                var totalOriginalValue = (originalValue1).toFixed(2);
+                var totalWSValue = (WSValue1).toFixed(2);
+
+                var differenceValue = (WSValue1 - originalValue1).toFixed(2);
+                var adjustedDifference = (differenceValue - priceOfWS).toFixed(2);
+                var ROI = ((adjustedDifference / priceOfWS) * 100).toFixed(2);
+
+           
+
+
+            document.getElementById('totalOriginalValue').innerHTML = `Total Original Value: <span style = "font-weight: bold;">$${totalOriginalValue}</span>`;
+            document.getElementById('totalWSValue').innerHTML = `Total WS Value: <span style = "font-weight: bold;">$${totalWSValue}</span>`;
+            document.getElementById('adjustedDifference').innerHTML = `Difference with Cost of WS included: <span style = "font-weight: bold;">$${differenceValue} - $${priceOfWS} = $${adjustedDifference}</span>`;
+            document.getElementById('ROI').innerHTML = `Return on Investment (ROI): <span style = "font-weight: bold;">${ROI}%</span>`;
+            document.getElementById('YieldDifference').innerHTML = `$ Difference due to Yield change: <span style = "font-weight: bold;"> $${YieldDifference} </span>`;
+            document.getElementById('QBDifference').innerHTML = `$ Difference due to QB change: <span style = "font-weight: bold;"> $${QBDifference} </span>`;
+
+
+        }
+
+        function calculateQualityBonus(rejects) {
+            var qualityBonus;
+
+        
+            if (rejects < 0) {
+            rejects = 0;
+                alert("Rejects cannot be negative. Setting to 0.");
+            } else if (rejects < 0.006) {
+                qualityBonus = 0.185;
+            } else if (rejects < 0.011) {
+                qualityBonus = 0.175;
+            } else if (rejects < 0.016) {
+                qualityBonus = 0.165;
+            } else if (rejects < 0.02) {
+                qualityBonus = 0.155;
+            } else if (rejects < 0.021) {
+                qualityBonus = 0.115;
+            } else if (rejects < 0.026) {
+                qualityBonus = 0.065;
+            } else if (rejects < 0.031) {
+                qualityBonus = 0.05;
+            } else if (rejects < 0.041) {
+                qualityBonus = 0.045;
+            } else if (rejects < 0.051) {
+                qualityBonus = 0.035;
+            } else if (rejects < 0.061) {
+                qualityBonus = 0.025;
+            } else if (rejects < 0.071) {
+                qualityBonus = 0.015;
+            } else if (rejects < 0.081) {
+                qualityBonus = 0.005;
+            } else if (rejects < 0.091) {
+                qualityBonus = -0.005;
+            } else {
+                qualityBonus = -0.015;
+            }
+
+            
+
+
+            return qualityBonus;
+        }
+
+        
+        function calculateQualityBonusWS(rejectsWS) {
+            var qualityBonusWS;
+
+        
+            if (rejectsWS < 0) {
+            rejectsWS = 0;
+                alert("rejectsWS cannot be negative. Setting to 0.");
+            } else if (rejectsWS < 0.006) {
+                qualityBonusWS = 0.185;
+            } else if (rejectsWS < 0.011) {
+                qualityBonusWS = 0.175;
+            } else if (rejectsWS < 0.016) {
+                qualityBonusWS = 0.165;
+            } else if (rejectsWS < 0.02) {
+                qualityBonusWS = 0.155;
+            } else if (rejectsWS < 0.021) {
+                qualityBonusWS = 0.115;
+            } else if (rejectsWS < 0.026) {
+                qualityBonusWS = 0.065;
+            } else if (rejectsWS < 0.031) {
+                qualityBonusWS = 0.05;
+            } else if (rejectsWS < 0.041) {
+                qualityBonusWS = 0.045;
+            } else if (rejectsWS < 0.051) {
+                qualityBonusWS = 0.035;
+            } else if (rejectsWS < 0.061) {
+                qualityBonusWS = 0.025;
+            } else if (rejectsWS < 0.071) {
+                qualityBonusWS = 0.015;
+            } else if (rejectsWS < 0.081) {
+                qualityBonusWS = 0.005;
+            } else if (rejectsWS < 0.091) {
+                qualityBonusWS = -0.005;
+            } else {
+                qualityBonusWS = -0.015;
+            }
+
+            
+            return qualityBonusWS;
+        }
+
+        function calculateRejects1(Mummies1) {
+             if (Mummies1 >= 2.25) {
+                return .085;
+            } else {
+                return (1.1076 * Math.exp(0.9137 * Mummies1)) / 100;
+            }
+}
+
+
+        function calculateRejectsG(MummiesG) {
+            if (MummiesG >= 2.25) {
+                return .085;
+            } else {
+                return (1.1076 * Math.exp(0.9137 * MummiesG)) / 100;
+            }
+        }
+
+
+
+        function calculateOriginalValue(yield, price, rejects1, qualityBonus1) {
+            var originalValue = (price * yield * (1 - 2 * rejects1)) + (yield * (1 - (2 * rejects1)) * qualityBonus1);
+            return originalValue;
+        }
+
+        function calculateWSValue(yield, price, rejectsG, qualityBonusWS) {
+            var WSValue = (price * yield * (1 - 2 * rejectsG)) + (yield * (1 - (2 * rejectsG)) * qualityBonusWS);
+            return WSValue;
+        }
+
+        function calculateROI(DifferenceValue, priceOfWS) {
+            var ROI = (DifferenceValue / priceOfWS);
+            return ROI;
+        }
+
+        function calculateYieldDifference(yield, price, rejects1, rejectsG) {
+            var YieldDifference = (price * yield * (1 - 2 * rejectsG)) - (price * yield * (1 - 2 * rejects1));
+            return YieldDifference;
+        }
+
+        function calculateQBDifference(yield, rejects1, rejectsG, qualityBonus1, qualityBonusWS) {
+            var QBDifference = (yield * (1 - (2 * rejectsG)) * qualityBonusWS) - (yield * (1 - (2 * rejects1)) * qualityBonus1);
+            return QBDifference;
+        }
+    </script>
+</body>
+</html>

@@ -4,155 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MD Calc in Almonds</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #15bcbc;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
-
-        h1 {
-            color: #333;
-            margin-bottom: 20px;
-            position: absolute;
-            top: 2%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            align-items: center;
-            justify-content:center;
-        }
-
-        form {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 600px;
-        }
-        .container {
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            flex-direction: column;
-            margin-top: 5px;
-        }
-        .column {
-            float: left;
-            width: 33.33%;
-        }
-
-        .input-container {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            margin-top: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-        }
-
-        input {
-            width: calc(100% - 16px);
-            padding: 8px;
-            margin-bottom: 16px;
-            box-sizing: border-box;
-        }
-
-        button {
-            background-color: navy;
-            color: #fff;
-            padding: 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        h2 {
-            margin-top: 20px;
-            color: #333;
-        }
-
-        p {
-            color: #666;
-        }
-
-        .large-dropdown {
-            width: 185px;
-            height: 35px;
-            padding: 10px;
-            margin-bottom: 15px;
-        }
-        .note-button {
-            background-color: transparent;
-            border: none;
-            color: blue;
-            cursor: help; /* Change cursor to pointer on hover */
-            text-decoration: underline; /* Underline text on hover */
-            font-size: 18px;
-            padding: 10px;
-            text-align: left;
-            margin-top: 20px;
-        }
-        
-        .note-button:hover::after {
-            content: attr(data-note); /* Show note when hovered */
-            position: absolute;
-            background-color: #f9f9f9;
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            width: max-content;
-            z-index: 1;
-            font-size: 16px;
-        }
-        .tooltip {
-            position: relative;
-            display: inline-block;
-            border-bottom: 1px dotted black; /* Add a dotted underline */
-        }
-
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: max-content;
-            background-color: #555;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 5px 5px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -75px;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .tooltip .tooltiptext::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: #555 transparent transparent transparent;
-        }
-
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
-    </style>
+    <link rel="stylesheet" href="calculatorstyles.css">
 </head>
 <body>
     <div class="input-container">
@@ -171,13 +23,13 @@
                     <option value="Other">Other</option>
                 </select>
 
-                <label for="yield1">Yield (Variety 1):</label>
+                <label for="yield1">Yield Variety 1 (lbs/acre):</label>
                 <input type="number" id="yield1" required>
 
-                <label for="rejectsP1">Rejects (Variety 1):</label>
+                <label for="rejectsP1">Rejects Variety 1 (%):</label>
                 <input type="number" id="rejectsP1" required> 
 
-                <label for="commodityPrice1">Price (Variety 1):</label>
+                <label for="commodityPrice1">Price Variety 1 ($/lbs):</label>
                 <input type="number" id="commodityPrice1" required>
             </div>
     
@@ -192,13 +44,13 @@
                     <option value="Other">Other</option>
                 </select>
 
-                <label for="yield2">Yield (Variety 2):</label>
+                <label for="yield2">Yield Variety 2 (lbs/acre):</label>
                 <input type="number" id="yield2" required>
 
-                <label for="rejectsP2">Rejects (Variety 2):</label>
+                <label for="rejectsP2">Rejects Variety 2 (%):</label>
                 <input type="number" id="rejectsP2" required>   
 
-                <label for="commodityPrice2">Price (Variety 2):</label>
+                <label for="commodityPrice2">Price Variety 2 ($/lbs):</label>
                 <input type="number" id="commodityPrice2" required>
             </div>
     
@@ -213,19 +65,19 @@
                     <option value="Other">Other</option>
                 </select>
 
-                <label for="yield3">Yield (Variety 3):</label>
+                <label for="yield3">Yield Variety 3 (lbs/acre):</label>
                 <input type="number" id="yield3" required>
 
-                <label for="rejectsP3">Rejects (Variety 3):</label>
+                <label for="rejectsP3">Rejects Variety 3 (%):</label>
                 <input type="number" id="rejectsP3" required>
                 
-                <label for="commodityPrice3">Price (Variety 3):</label>
+                <label for="commodityPrice3">Price Variety 3 ($/lbs):</label>
                 <input type="number" id="commodityPrice3" required>
             </div>
         </div>
     
         <div>
-            <label for="priceOfMD">Price of Mating Disruption:</label>
+            <label for="priceOfMD">Cost of Mating Disruption ($/acre):</label>
             <input type="number" id="priceOfMD" required>
         </div>
     
