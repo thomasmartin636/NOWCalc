@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MD Calc in Almonds</title>
+    <link rel="stylesheet" href="calculatorstyles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Quick Look at MD Calc in Almonds</h1>
+        <div class="container">
+            <form id="calculatorForm">
+                <div class="column">
+                    <label for="orchard1">Orchard Name:</label>
+                    <input type="text" id="orchard1" required>
+                </div>
+
+                <div class="column">
+                    <label for="name1">Block Name:</label>
+                    <input type="text" id="name1" required>
+                </div>
+
+                <div class="column">
+                    <label for="acres1">Acres:</label>
+                    <input type="number" id="acres1" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="yield1">Yield (lbs/acre):</label>
+                    <input type="number" id="yield1" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="rejectsP1">Rejects (%):</label>
+                    <input type="number" id="rejectsP1" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="commodityPrice1">Price ($/lbs):</label>
+                    <input type="number" id="commodityPrice1" required>
+                </div>
+
+                <div>
+                    <label for="priceOfMD">Price of Mating Disruption ($/acre):</label>
+                    <input type="number" id="priceOfMD" required>
+                </div>
+
+                <button type="button" onclick="calculate()">Calculate</button>
+            
+                <div class="result">
+                    <button class="note-button" data-note="Value = (Price * Yield * (1 - 2 * Rejects)) + (Yield * (1 - 2 * Rejects) * QualityBonus)">
+                        Hover for Equation 
+                    </button>  
+
+                    <p id="orchardNameOutput"></p>
+
+                    <p id="Details"></p>
+                
+                    <h2><span class="tooltip"><span class="tooltiptext">Difference = (Mating Disruption Value - Original Value) - Price of MD</span>Difference with cost of MD included:</span></h2>
+                    <p id="adjustedDifference">Waiting for input...</p>       
+                    
+                    <p id="TotalDollars"></p>
+
+                    <p id="DeltaRejects"></p>
+
+                    <p id="DeltaYield"></p>
+
+                    <p id="DeltaQB"></p>
+                    
+                    <h2><span class="tooltip"><span class="tooltiptext">Value of Orchard WITHOUT Mating Disruption</span>Total Original Value:</span></h2>
+                    <p id="totalOriginalValue">Waiting for input...</p>
+
+                    <h2><span class="tooltip"><span class="tooltiptext">Value of Orchard WITH Mating Disruption (50% reduction of rejects)</span>Total Mating Disruption Value:</span></h2>
+                    <p id="totalMDValue">Waiting for input...</p>
+
+                    <h2><span class="tooltip"><span class="tooltiptext">ROI = Difference / Price of MD * 100</span>Return on Investment (ROI):</span></h2>
+                    <p id="ROI">Waiting for input...</p>
+
+                    <h2>$ Difference due to Yield change:</h2>
+                    <p id="YieldDifference">Waiting for input...</p>
+
+                    <h2>$ Difference due to Quality Bonus change:</h2>
+                    <p id="QBDifference">Waiting for input...</p>
+
+                    <p>Estimates for Quality Bonuses based on Blue Diamond's 2025 Crop Delivery Guide. Reject Schedule for Nonpariel, Independence, Sonora meats & All Reject Earning types (pg16). Estimate assumes 100% rejects due to NOW & 50% reduction in rejects due to Mating Disruption.</p>
+                   
+                    <button onclick="location.href='index.html'">Go Back to Homepage</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            // Inputs
+            var orchard1 = document.getElementById('orchard1').value;
+            var name1    = document.getElementById('name1').value;
+            var acres1   = document.getElementById('acres1').value;
+
+            var yield1    = parseFloat(document.getElementById('yield1').value);
+            var rejectsP1 = parseFloat(document.getElementById('rejectsP1').value);
+            var price1    = parseFloat(document.getElementById('commodityPrice1').value);
+            var priceOfMD = parseFloat(document.getElementById('priceOfMD').value);
+
+            // Convert % to proportion
+            var rejects1 = calculateRejects1(rejectsP1);
+
+            // Original scenario
+            var qualityBonus1  = calculateQualityBonus(rejects1);
+            var originalValue1 = calculateOriginalValue(yield1, price1, rejects1, qualityBonus1);
+
+            // MD scenario (50% reduction in rejects)
+            var rejectsMD1      = rejects1 * 0.5;
+            var rejectsMDP1     = rejectsMD1 * 100;
+            var qualityBonusMD1 = calculateQualityBonusMD(rejectsMD1);
+            var MDValue1        = calculateMDValue(yield1, price1, rejectsMD1, qualityBonusMD1);
+
+            // Differences
+            var YieldDifference = calculateYieldDifference(yield1, price1, rejects1, rejectsMD1).toFixed(2);
+            var QBDifference    = calculateQBDifference(yield1, rejects1, rejectsMD1, qualityBonus1, qualityBonusMD1).toFixed(2);
+
+            var totalOriginalValue = originalValue1.toFixed(2);
+            var totalMDValue       = MDValue1.toFixed(2);
+
+            var differenceValue    = (MDValue1 - originalValue1).toFixed(2);
+            var adjustedDifference = (differenceValue - priceOfMD).toFixed(2);
+            var ROI                = ((adjustedDifference / priceOfMD) * 100).toFixed(2);
+
+            var TotalDollarsNumber = adjustedDifference * acres1;
+
+            var TotalDollars = TotalDollarsNumber.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+                    });
+
+            var Yieldrejects1Number = (yield1 *(1-2*rejects1)).toFixed(2)
+            var Yieldrejects1 = Number(Yieldrejects1Number).toLocaleString('en-US');
+
+
+            var YieldrejectsMDNumber = yield1 * (1 - 2 * rejectsMD1);
+
+            var YieldrejectsMD = YieldrejectsMDNumber.toLocaleString("en-US", {
+                maximumFractionDigits: 2
+                    });
+
+            var rejectsMDP1 = rejectsMDP1.toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+
+
+
+            // Top summary line
+            document.getElementById('orchardNameOutput').innerHTML =
+                `<span class="output-big" style="font-weight: bold;">
+                    ${orchard1} Block ${name1}: ${acres1} Acres
+                 </span>`;
+
+            document.getElementById('Details').innerHTML =
+                `<span class="output-medium">
+                    ${yield1} lbs/Acre; Commodity Price: $${price1}/lbs
+                 </span>`;
+
+            // Outputs
+            document.getElementById('totalOriginalValue').innerHTML =
+                `Total Original Value: <span style="font-weight: bold;">$${totalOriginalValue}</span>`;
+
+            document.getElementById('totalMDValue').innerHTML =
+                `Total MD Value: <span style="font-weight: bold;">$${totalMDValue}</span>`;
+
+            document.getElementById('adjustedDifference').innerHTML =
+                `Difference with Cost of MD included: <span style="font-weight: bold;">$${differenceValue} - $${priceOfMD} =</span><span class = "output-green2">$${adjustedDifference}/Acre</span>`;
+
+            document.getElementById('ROI').innerHTML =
+                `Return on Investment (ROI): <span style="font-weight: bold;">${ROI}%</span>`;
+
+            document.getElementById('YieldDifference').innerHTML =
+                `$ Difference due to Yield change: <span style="font-weight: bold;">$${YieldDifference}</span>`;
+
+            document.getElementById('QBDifference').innerHTML =
+                `$ Difference due to QB change: <span style="font-weight: bold;">$${QBDifference}</span>`;
+
+            document.getElementById('TotalDollars').innerHTML = 
+                 `Estimated Return when using CIDETRAK on ${orchard1} Block ${name1} = <span class = "output-green2">$${TotalDollars}</span>`;
+
+            document.getElementById('DeltaRejects').innerHTML = 
+                 `Rejects went from <span class = "output-difference">${rejectsP1}%</span> to <span class = "output-green">${rejectsMDP1}%</span>`;
+
+            document.getElementById('DeltaYield').innerHTML = 
+                 `Yield went from <span class = "output-difference">${Yieldrejects1} lbs/Acre</span> to <span class = "output-green">${YieldrejectsMD} lbs/Acre</span> ($${YieldDifference})`;
+
+            document.getElementById('DeltaQB').innerHTML = 
+                 `Quality Bonus went from <span class = "output-difference">$${qualityBonus1}/lbs </span> to <span class = "output-green">$${qualityBonusMD1}/lbs</span> ($${QBDifference})`;
+
+
+
+        }
+
+        function calculateQualityBonus(rejects) {
+            var qualityBonus;
+
+            if (rejects < 0) {
+                rejects = 0;
+                alert("Rejects cannot be negative. Setting to 0.");
+            } else if (rejects <= 0.0059) {
+                qualityBonus = 0.05;
+            } else if (rejects <= 0.0109) {
+                qualityBonus = 0.04;
+            } else if (rejects <= 0.0159) {
+                qualityBonus = 0.03;
+            } else if (rejects <= 0.0209) {
+                qualityBonus = 0.01;
+            } else if (rejects <= 0.0259) {
+                qualityBonus = 0.0;
+            } else if (rejects <= 0.0309) {
+                qualityBonus = -0.02;
+            } else if (rejects <= 0.0409) {
+                qualityBonus = -0.03;
+            } else if (rejects <= 0.0509) {
+                qualityBonus = -0.04;
+            } else if (rejects <= 0.0759) {
+                qualityBonus = -0.05;
+            } else if (rejects <= 0.1009) {
+                qualityBonus = -0.10;
+            } else if (rejects <= 0.2009) {
+                qualityBonus = -0.15;
+            } else {
+                qualityBonus = -0.25;
+            }
+
+            return qualityBonus;
+        }
+
+        function calculateQualityBonusMD(rejectsMD) {
+            var qualityBonusMD;
+
+             if (rejectsMD < 0) {
+                rejectsMD = 0;
+                alert("rejectsMD cannot be negative. Setting to 0.");
+            } else if (rejectsMD <= 0.0059) {
+                qualityBonusMD = 0.05;
+            } else if (rejectsMD <= 0.0109) {
+                qualityBonusMD = 0.04;
+            } else if (rejectsMD <= 0.0159) {
+                qualityBonusMD = 0.03;
+            } else if (rejectsMD <= 0.0209) {
+                qualityBonusMD = 0.01;
+            } else if (rejectsMD <= 0.0259) {
+                qualityBonusMD = 0.0;
+            } else if (rejectsMD <= 0.0309) {
+                qualityBonusMD = -0.02;
+            } else if (rejectsMD <= 0.0409) {
+                qualityBonusMD = -0.03;
+            } else if (rejectsMD <= 0.0509) {
+                qualityBonusMD = -0.04;
+            } else if (rejectsMD <= 0.0759) {
+                qualityBonusMD = -0.05;
+            } else if (rejectsMD <= 0.1009) {
+                qualityBonusMD = -0.10;
+            } else if (rejectsMD <= 0.2009) {
+                qualityBonusMD = -0.15;
+            } else {
+                qualityBonusMD = -0.25;
+            }
+
+            return qualityBonusMD;
+        }
+
+        function calculateRejects1(rejectsP1) {
+            return rejectsP1 / 100;
+        }
+
+        function calculateOriginalValue(yield1, price1, rejects1, qualityBonus1) {
+            return (price1 * yield1 * (1 - 2 * rejects1)) +
+                   (yield1 * (1 - 2 * rejects1) * qualityBonus1);
+        }
+
+        function calculateMDValue(yield1, price1, rejectsMD1, qualityBonusMD1) {
+            return (price1 * yield1 * (1 - 2 * rejectsMD1)) +
+                   (yield1 * (1 - 2 * rejectsMD1) * qualityBonusMD1);
+        }
+
+        function calculateYieldDifference(yield1, price1, rejects1, rejectsMD1) {
+            return (price1 * yield1 * (1 - 2 * rejectsMD1)) -
+                   (price1 * yield1 * (1 - 2 * rejects1));
+        }
+
+        function calculateQBDifference(yield1, rejects1, rejectsMD1, qualityBonus1, qualityBonusMD1) {
+            return (yield1 * (1 - 2 * rejectsMD1) * qualityBonusMD1) -
+                   (yield1 * (1 - 2 * rejects1)  * qualityBonus1);
+        }
+
+    </script>
+</body>
+</html>
