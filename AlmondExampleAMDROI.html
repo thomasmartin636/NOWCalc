@@ -9,9 +9,13 @@
 <body>
     <div class="container">
     <h1>Almond Mating Disruption Calculator</h1>
+    <h3>If only one variety, input "0" for all others</h3>
     <form id="calculatorForm">
         <div class="input-container">
             <div class="column">
+
+                <label for="orchard1">Orchard Name:</label>
+                <input type="text" id="orchard1" required>
                 
                 <label for="yield1">Yield Variety 1 (lbs/acre):</label>
                 <input type="number" id="yield1" required>
@@ -24,6 +28,9 @@
             </div>
     
             <div class="column">
+
+                <label for="name1">Block Name:</label>
+                <input type="text" id="name1" required>
                 
                 <label for="yield2">Yield Variety 2 (lbs/acre):</label>
                 <input type="number" id="yield2" required>
@@ -36,6 +43,10 @@
             </div>
     
             <div class="column">
+
+                <label for="acres1">Acres:</label>
+                <input type="text" id="acres1" required>
+
                 <label for="yield3">Yield Variety 3 (lbs/acre):</label>
                 <input type="number" id="yield3" required>
 
@@ -48,7 +59,7 @@
         </div>
     
         <div>
-            <label for="priceOfMD">Cost of Mating Disruption ($/acre):</label>
+            <label for="priceOfMD">Price of Mating Disruption ($/acre):</label>
             <input type="number" id="priceOfMD" required>
         </div>
     
@@ -59,16 +70,18 @@
                 Hover for Equation 
             </button>  
 
+            <p id="orchardNameOutput"></p>
+        
+            <h2><span class = "tooltip"><span class="tooltiptext">Difference = (Mating Disruption Value - Original Value) - Price of MD</span>Difference with cost of MD included:</span></h2>
+            <p id="adjustedDifference">Waiting for input...</p>            
+            
             <h2><span class = "tooltip"><span class="tooltiptext">Value of Orchard WITHOUT Mating Disruption</span>Total Original Value:</span></h2>
             <p id="totalOriginalValue">Waiting for input...</p>
 
-            <h2><span class = "tooltip"><span class="tooltiptext">Value of Orchard WITH Mating Disruption</span>Total Mating Disruption Value:</span></h2>
+            <h2><span class = "tooltip"><span class="tooltiptext">Value of Orchard WITH Mating Disruption (50% reduction of rejects)</span>Total Mating Disruption Value:</span></h2>
             <p id="totalMDValue">Waiting for input...</p>
 
-            <h2><span class = "tooltip"><span class="tooltiptext">Difference = (Mating Disruption Value - Original Value) - Price of MD</span>Difference with cost of MD included:</span></h2>
-            <p id="adjustedDifference">Waiting for input...</p>
-
-            <h2><span class = "tooltip"><span class="tooltiptext">ROI = Difference / Price of MD</span>Return on Investment (ROI):</span></h2>
+            <h2><span class = "tooltip"><span class="tooltiptext">ROI = Difference / Price of MD * 100</span>Return on Investment (ROI):</span></h2>
             <p id="ROI">Waiting for input...</p>
 
             <h2>$ Difference due to Yield change:</h2>
@@ -119,6 +132,13 @@
             var QBDifference = calculateQBDifference(yield1, rejects1, rejectsMD1, qualityBonus1, qualityBonusMD1, yield2, rejects2, rejectsMD2, qualityBonus2, qualityBonusMD2, yield3, rejects3, rejectsMD3, qualityBonus3, qualityBonusMD3).toFixed(2);
 
             var priceOfMD = parseFloat(document.getElementById('priceOfMD').value);
+
+            var orchard1 = document.getElementById('orchard1').value;
+            var name1 = document.getElementById('name1').value;
+            var acres1 = document.getElementById('acres1').value;
+
+
+
             
 
             var totalOriginalValue = (originalValue1 + originalValue2 + originalValue3).toFixed(2);
@@ -129,8 +149,7 @@
             var ROI = ((adjustedDifference / priceOfMD) * 100).toFixed(2);
 
            
-
-
+            document.getElementById('orchardNameOutput').innerHTML =`<span class="output-big", style="font-weight: bold;">${orchard1};     Block ${name1};      ${acres1} Acres</span>`;
             document.getElementById('totalOriginalValue').innerHTML = `Total Original Value: <span style = "font-weight: bold;">$${totalOriginalValue}</span>`;
             document.getElementById('totalMDValue').innerHTML = `Total MD Value: <span style = "font-weight: bold;">$${totalMDValue}</span>`;
             document.getElementById('adjustedDifference').innerHTML = `Difference with Cost of MD included: <span style = "font-weight: bold;">$${differenceValue} - $${priceOfMD} = $${adjustedDifference}</span>`;

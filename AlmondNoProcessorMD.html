@@ -54,6 +54,10 @@
         </div>
     
         <button type="button" onclick="calculate()">Calculate</button>
+
+        <button class="note-button" data-note="Value = (Price * Yield * (1 - 2 * Rejects))">
+            Hover for Equation 
+        </button> 
     
         <div class="result">
             <h2>Total Original Value:</h2>
@@ -150,7 +154,7 @@
         function calculateROI(DifferenceValue, priceOfMD) {
             var ROI = (DifferenceValue / priceofMD);
             return ROI;
-        }
+        } 
     </script>
 </body>
 </html>

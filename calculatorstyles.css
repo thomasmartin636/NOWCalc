@@ -20,6 +20,17 @@ h1 {
     justify-content:max-content;
 }
 
+h3 {
+    color: #333;
+    padding-top: 100px;
+    position: absolute;
+    top: 2%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    align-items: center;
+    justify-content:max-content;
+}
+
 form {
     background-color: #fff;
     padding: 20px;
@@ -44,7 +55,7 @@ form {
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
-    margin-top: 40px;
+    margin-top: 140px;
 }
 
 label {
@@ -145,4 +156,40 @@ p {
 .tooltip:hover .tooltiptext {
     visibility: visible;
     opacity: 1;
+}
+
+.output-big {
+    font-weight: bold;
+    font-size: 36px; /* adjust as needed */
+    color: navy;
+}
+
+.output-medium {
+    font-weight: bold;
+    font-size: 24px; /* adjust as needed */
+    color: navy;
+}
+
+.output-difference {
+    font-weight: bold;
+    font-size: 24px; /* adjust as needed */
+    color: red;
+}
+
+.output-difference2 {
+    font-weight: bold;
+    font-size: 36px; /* adjust as needed */
+    color: red;
+}
+
+.output-green {
+    font-weight: bold;
+    font-size: 24px;
+    color: green
+}
+
+.output-green2 {
+    font-weight: bold;
+    font-size: 36px;
+    color: green
 }
